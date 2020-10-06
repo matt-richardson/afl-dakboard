@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "AFL Ladder";
+}
+@model afl_dakboard.Controllers.RichmondViewModel
+
+<div style="display: flex;">
+    <div>
+        <img src="/img/richmond-tigers-logo.png" height="128" width="128"/>
+    </div>
+    <div>
+        <strong>Last Game:</strong><br/>
+        @Model.LastGame.date<br/>
+        <table>
+            <thead>
+            <tr>
+                <th>Team</th>
+                <th>G</th>
+                <th>B</th>
+                <th>Pts</th>
+            </tr>
+            </thead>
+            <tr>
+                <td>Richmond</td>
+                <td>@Model.RichmondGoals</td>
+                <td>@Model.RichmondBehinds</td>
+                <td>@Model.RichmondScore</td>
+            </tr>
+            <tr>
+                <td>@Model.Opposition</td>
+                <td>@Model.OppositionGoals</td>
+                <td>@Model.OppositionBehinds</td>
+                <td>@Model.OppositionScore</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<br/>
+<strong>Next Game:</strong><br/>
+@if (@Model.NextGame == null)
+{
+    <text>unknown</text>
+}
+else
+{
+    @Model.NextGame.date<text> at </text>@Model.NextGame.venue
+}
+
