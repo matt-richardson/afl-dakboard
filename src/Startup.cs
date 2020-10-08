@@ -24,7 +24,11 @@ namespace afl_dakboard
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews()
-                    .AddRazorRuntimeCompilation();
+                .AddRazorRuntimeCompilation();
+            services.AddLettuceEncrypt(o =>
+            {
+                o.UseStagingServer = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
