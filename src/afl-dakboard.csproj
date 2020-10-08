@@ -21,4 +21,10 @@
       <_ContentIncludedByDefault Remove="wwwroot\lib\moment-js\moment.min.js.map" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="..\Dockerfile">
+        <Link>Dockerfile</Link>
+      </Content>
+    </ItemGroup>
+
 </Project>
