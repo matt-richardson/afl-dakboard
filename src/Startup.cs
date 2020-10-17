@@ -29,10 +29,9 @@ namespace afl_dakboard
             var logger = LoggerFactory.Create(x => x.AddConsole()).CreateLogger<Startup>();
             var persistenceDirectory = Configuration["LetsEncryptPersistenceDirectory"];
             logger.LogInformation("Using LettuceEncrypt persistence directory " + persistenceDirectory);
-            services.AddLettuceEncrypt(o =>
-            {
-                o.UseStagingServer = true;
-            }).PersistDataToDirectory(new DirectoryInfo(persistenceDirectory), Configuration["LetsEncryptPersistencePassword"]);
+            services
+                .AddLettuceEncrypt()
+                .PersistDataToDirectory(new DirectoryInfo(persistenceDirectory), Configuration["LetsEncryptPersistencePassword"]);
             services.AddControllersWithViews()
                     .AddRazorRuntimeCompilation();
         }
