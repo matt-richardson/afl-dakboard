@@ -23,10 +23,13 @@ namespace afl_dakboard
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var logger = LoggerFactory.Create(x => x.AddConsole()).CreateLogger<Startup>();
+            var persistenceDirectory = Configuration["LetsEncryptPersistenceDirectory"];
+            logger.LogInformation("Using LettuceEncrypt persistence directory " + persistenceDirectory);
             services.AddLettuceEncrypt(o =>
             {
                 o.UseStagingServer = true;
-            });
+            }).PersistDataToDirectory(new DirectoryInfo(persistenceDirectory), Configuration["LetsEncryptPersistencePassword"]);
             services.AddControllersWithViews()
                     .AddRazorRuntimeCompilation();
         }
