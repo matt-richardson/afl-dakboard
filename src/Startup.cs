@@ -1,12 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using LettuceEncrypt;
+using Certes;
+using FluffySpoon.AspNet.EncryptWeMust;
+using FluffySpoon.AspNet.EncryptWeMust.Certes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,12 +23,24 @@ namespace afl_dakboard
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var logger = LoggerFactory.Create(x => x.AddConsole()).CreateLogger<Startup>();
-            var persistenceDirectory = Configuration["LetsEncryptPersistenceDirectory"];
-            logger.LogInformation("Using LettuceEncrypt persistence directory " + persistenceDirectory);
-            services
-                .AddLettuceEncrypt()
-                .PersistDataToDirectory(new DirectoryInfo(persistenceDirectory), Configuration["LetsEncryptPersistencePassword"]);
+            services.AddFluffySpoonLetsEncrypt(new LetsEncryptOptions
+            {
+                Email = Configuration["FluffySpoonLetsEncrypt:EmailAddress"], //LetsEncrypt will send you an e-mail here when the certificate is about to expire
+                UseStaging = bool.Parse(Configuration["FluffySpoonLetsEncrypt:UseStaging"]), //switch to true for testing
+                Domains = new[] { Configuration["FluffySpoonLetsEncrypt:Domain"] },
+                TimeUntilExpiryBeforeRenewal = TimeSpan.FromDays(30), //renew automatically 30 days before expiry
+                CertificateSigningRequest = new CsrInfo //these are your certificate details
+                {
+                    CountryName = "Australia",
+                    Locality = "AU",
+                    Organization = Configuration["FluffySpoonLetsEncrypt:Domain"],
+                    OrganizationUnit = "afl",
+                    State = "VIC"
+                }
+            });
+            services.AddFluffySpoonLetsEncryptFileCertificatePersistence("FluffySpoonLetsEncrypt:CertificatePersistenceFilePath");
+            services.AddFluffySpoonLetsEncryptFileChallengePersistence("FluffySpoonLetsEncrypt:ChallengePersistenceFilePath");
+
             services.AddControllersWithViews()
                     .AddRazorRuntimeCompilation();
         }
@@ -47,6 +56,7 @@ namespace afl_dakboard
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+            app.UseFluffySpoonLetsEncrypt();
 
             app.UseStaticFiles();
 
