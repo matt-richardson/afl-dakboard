@@ -49,7 +49,6 @@ namespace afl_dakboard
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
