@@ -1,7 +1,4 @@
 using System;
-using Certes;
-using FluffySpoon.AspNet.EncryptWeMust;
-using FluffySpoon.AspNet.EncryptWeMust.Certes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,24 +20,6 @@ namespace afl_dakboard
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddFluffySpoonLetsEncrypt(new LetsEncryptOptions
-            {
-                Email = Configuration["FluffySpoonLetsEncrypt:EmailAddress"], //LetsEncrypt will send you an e-mail here when the certificate is about to expire
-                UseStaging = bool.Parse(Configuration["FluffySpoonLetsEncrypt:UseStaging"]), //switch to true for testing
-                Domains = new[] { Configuration["FluffySpoonLetsEncrypt:Domain"] },
-                TimeUntilExpiryBeforeRenewal = TimeSpan.FromDays(30), //renew automatically 30 days before expiry
-                CertificateSigningRequest = new CsrInfo //these are your certificate details
-                {
-                    CountryName = "Australia",
-                    Locality = "AU",
-                    Organization = Configuration["FluffySpoonLetsEncrypt:Domain"],
-                    OrganizationUnit = "afl",
-                    State = "VIC"
-                }
-            });
-            services.AddFluffySpoonLetsEncryptFileCertificatePersistence("FluffySpoonLetsEncrypt:CertificatePersistenceFilePath");
-            services.AddFluffySpoonLetsEncryptFileChallengePersistence("FluffySpoonLetsEncrypt:ChallengePersistenceFilePath");
-
             services.AddControllersWithViews()
                     .AddRazorRuntimeCompilation();
         }
@@ -56,7 +35,6 @@ namespace afl_dakboard
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-            app.UseFluffySpoonLetsEncrypt();
 
             app.UseStaticFiles();
 
