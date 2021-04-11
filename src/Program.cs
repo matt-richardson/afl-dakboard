@@ -19,7 +19,7 @@ namespace afl_dakboard
 
         public static IWebHostBuilder CreateHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseUrls("http://localhost:80")
+                .UseUrls("http://+:80")
                 .UseStartup<Startup>();
     }
 }
