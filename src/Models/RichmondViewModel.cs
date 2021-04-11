@@ -28,7 +28,9 @@ namespace afl_dakboard.Controllers
                 (RichmondGoals, RichmondBehinds, RichmondScore) = (LastGame.agoals, LastGame.abehinds, LastGame.ascore);
                 (OppositionGoals, OppositionBehinds, OppositionScore, Opposition) = (LastGame.hgoals, LastGame.hbehinds, LastGame.hscore, LastGame.hteam);
             }
-            NextGame = games.OrderByDescending(x => x.round).FirstOrDefault(x => x.complete < 100);
+            NextGame = games.OrderBy(x => x.round).FirstOrDefault(x => x.complete < 100);
+            var dateTime = DateTime.Parse(NextGame.date);
+            NextGame.date = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({dateTime.Humanize()})";
         }
     }
 }
