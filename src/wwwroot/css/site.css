@@ -28,6 +28,7 @@ a {
 -------------------------------------------------- */
 html {
   font-size: 14px;
+  overflow: hidden;
 }
 @media (min-width: 768px) {
   html {
@@ -60,7 +61,7 @@ html {
 
 body {
   /* Margin bottom by footer height */
-  margin-bottom: 60px;
+  /* margin-bottom: 60px; */
   background-color: black;
   color: white;
 }
