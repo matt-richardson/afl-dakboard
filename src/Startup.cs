@@ -22,7 +22,7 @@ namespace afl_dakboard
         {
             services.AddLogging(loggingBuilder =>
                 {
-                    loggingBuilder.AddSeq();
+                    loggingBuilder.AddSeq(Configuration.GetSection("Seq"));
                 })
                 .AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
