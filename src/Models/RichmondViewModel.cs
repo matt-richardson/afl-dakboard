@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using afl_dakboard.Models;
 using Humanizer;
@@ -19,7 +20,7 @@ namespace afl_dakboard.Controllers
             LastGame = games.OrderByDescending(x => x.round).First(x => x.complete > 0);
             NextGame = games.OrderBy(x => x.round).FirstOrDefault(x => x.complete < 100);
             var dateTime = DateTime.Parse(NextGame.date);
-            LastGame.date = DateTime.Parse(LastGame.date).Humanize();
+            LastGame.date = DateTime.Parse(LastGame.date).Humanize(utcDate: false);
             if (LastGame.hteam == "Richmond")
             {
                 (RichmondGoals, RichmondBehinds, RichmondScore) = (LastGame.hgoals, LastGame.hbehinds, LastGame.hscore);
@@ -30,7 +31,7 @@ namespace afl_dakboard.Controllers
                 (RichmondGoals, RichmondBehinds, RichmondScore) = (LastGame.agoals, LastGame.abehinds, LastGame.ascore);
                 (OppositionGoals, OppositionBehinds, OppositionScore, Opposition) = (LastGame.hgoals, LastGame.hbehinds, LastGame.hscore, LastGame.hteam);
             }
-            NextGame.date = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({dateTime.Humanize()})";
+            NextGame.date = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({dateTime.Humanize(utcDate: false)})";
         }
     }
 }
