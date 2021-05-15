@@ -28,7 +28,6 @@ namespace afl_dakboard.Controllers
 
         public async Task<IActionResult> Richmond()
         {
-            var team = (await _repository.GetTeams()).First(x => x.name == "Richmond");
             var games = await (_repository.GetGamesForRichmondForThisYear());
 
             return View(new RichmondViewModel(games));
