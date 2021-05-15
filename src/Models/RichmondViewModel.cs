@@ -17,6 +17,8 @@ namespace afl_dakboard.Controllers
         public RichmondViewModel(List<Game> games)
         {
             LastGame = games.OrderByDescending(x => x.round).First(x => x.complete > 0);
+            NextGame = games.OrderBy(x => x.round).FirstOrDefault(x => x.complete < 100);
+            var dateTime = DateTime.Parse(NextGame.date);
             LastGame.date = DateTime.Parse(LastGame.date).Humanize();
             if (LastGame.hteam == "Richmond")
             {
@@ -28,8 +30,6 @@ namespace afl_dakboard.Controllers
                 (RichmondGoals, RichmondBehinds, RichmondScore) = (LastGame.agoals, LastGame.abehinds, LastGame.ascore);
                 (OppositionGoals, OppositionBehinds, OppositionScore, Opposition) = (LastGame.hgoals, LastGame.hbehinds, LastGame.hscore, LastGame.hteam);
             }
-            NextGame = games.OrderBy(x => x.round).FirstOrDefault(x => x.complete < 100);
-            var dateTime = DateTime.Parse(NextGame.date);
             NextGame.date = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({dateTime.Humanize()})";
         }
     }
