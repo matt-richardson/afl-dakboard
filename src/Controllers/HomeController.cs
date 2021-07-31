@@ -20,7 +20,12 @@ namespace afl_dakboard.Controllers
             _repository = repository;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
+        {
+            return RedirectPermanent("/home/ladder");
+        }
+
+        public async Task<IActionResult> Ladder()
         {
             var teams = await _repository.GetTeams();
             var standings = await _repository.GetStandings();
