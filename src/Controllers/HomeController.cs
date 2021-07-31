@@ -36,7 +36,7 @@ namespace afl_dakboard.Controllers
             var nextGame = games.OrderBy(x => x.round).FirstOrDefault(x => x.complete < 100);
             _logger.LogInformation("Last game is {Game}", JsonConvert.SerializeObject(lastGame));
             _logger.LogInformation("Next game is {Game}", JsonConvert.SerializeObject(nextGame));
-            return View(new RichmondViewModel(lastGame, nextGame));
+            return View(new RichmondViewModel(lastGame, nextGame, _logger));
         }
 
         public IActionResult Privacy()

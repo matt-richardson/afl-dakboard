@@ -1,6 +1,8 @@
 using System;
 using afl_dakboard.Models;
 using Humanizer;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace afl_dakboard.ViewModels
 {
@@ -17,7 +19,7 @@ namespace afl_dakboard.ViewModels
         public string NextGameDate { get; }
         public string NextGameVenue { get; }
 
-        public RichmondViewModel(Game lastGame, Game nextGame)
+        public RichmondViewModel(Game lastGame, Game nextGame, ILogger logger)
         {
             if (lastGame.hteam == "Richmond")
             {
@@ -35,6 +37,7 @@ namespace afl_dakboard.ViewModels
             var dateTime = DateTime.Parse(nextGame.date);
             NextGameDate = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({dateTime.Humanize(utcDate: false)})";
             NextGameVenue = nextGame.venue;
+            logger.LogInformation("Rendering {name} with {json}", nameof(RichmondViewModel), JsonConvert.SerializeObject(this));
         }
     }
 }
