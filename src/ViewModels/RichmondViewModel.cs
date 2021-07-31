@@ -1,11 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using afl_dakboard.Models;
 using Humanizer;
 
-namespace afl_dakboard.Controllers
+namespace afl_dakboard.ViewModels
 {
     public class RichmondViewModel
     {

@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using afl_dakboard.Models;
 
-namespace afl_dakboard.Controllers
+namespace afl_dakboard.ViewModels
 {
     public class IndexViewModel
     {

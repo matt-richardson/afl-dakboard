@@ -1,7 +1,9 @@
 ﻿@{
     ViewData["Title"] = "AFL Ladder";
 }
-@model afl_dakboard.Controllers.IndexViewModel
+@using afl_dakboard.ViewModels
+@model afl_dakboard.ViewModels.IndexViewModel
+
 
 <table>
     <thead>
@@ -15,22 +17,23 @@
     <th>Pts</th>
     </thead>
     @{
-        var count = 0;
+        var placing = 0;
+        var topTeams = Model.Standings.Take(8).ToArray();
     }
-    @foreach (var standing in Model.Standings.Take(8))
+    @foreach (var standing in topTeams)
     {
-        count = count + 1;
+        placing++;
         var team = Model.Teams.First(x => x.name == standing.name);
-        <tr>
-            <td>@count</td>
-            <td><img src="https://squiggle.com.au/@team.logo" height="16" width="16"/></td>
-            <td>@team.name</td>
-            <td>@standing.played</td>
-            <td>@standing.wins</td>
-            <td>@standing.losses</td>
-            <td>@standing.draws</td>
-            <td>@standing.percentage.ToString("N")</td>
-            <td>@standing.pts</td>
-        </tr>
+        <partial name="Standing" model="new StandingViewModel(placing, team, standing)"/>
     }
-</table>
+    @if (topTeams.All(x => x.name != "Richmond"))
+    {
+        placing = Model.Standings.FindIndex(x => x.name == "Richmond");
+        if (placing > 9) {
+            <tr><td colspan="6">...</td></tr>
+        }
+        var team = Model.Teams.First(x => x.name == "Richmond");
+        var standing = Model.Standings.First(x => x.name == "Richmond");
+        <partial name="Standing" model="new StandingViewModel(placing, team, standing)"/>
+    }
+ </table>

@@ -1,0 +1,15 @@
+@model afl_dakboard.ViewModels.StandingViewModel
+
+<tr>
+    <td>@Model.Order</td>
+    <td>
+        <img src="https://squiggle.com.au/@Model.Team.logo" height="16" width="16"/>
+    </td>
+    <td>@Model.Team.name</td>
+    <td>@Model.Standing.played</td>
+    <td>@Model.Standing.wins</td>
+    <td>@Model.Standing.losses</td>
+    <td>@Model.Standing.draws</td>
+    <td>@Model.Standing.percentage.ToString("N")</td>
+    <td>@Model.Standing.pts</td>
+</tr>
