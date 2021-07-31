@@ -12,10 +12,10 @@ namespace afl_dakboard.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly Repository _repository;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, Repository repository)
         {
             _logger = logger;
-            _repository = new Repository();
+            _repository = repository;
         }
 
         public async Task<IActionResult> Index()

@@ -1,4 +1,5 @@
 using System;
+using afl_dakboard.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +25,7 @@ namespace afl_dakboard
             services
                 .AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
+            services.AddSingleton<Repository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
