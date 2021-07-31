@@ -25,6 +25,7 @@ namespace afl_dakboard.Controllers
             return RedirectPermanent("/home/ladder");
         }
 
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Any)]
         public async Task<IActionResult> Ladder()
         {
             var teams = await _repository.GetTeams();
@@ -33,6 +34,7 @@ namespace afl_dakboard.Controllers
             return View(new IndexViewModel(teams, standings));
         }
 
+        [ResponseCache(Duration = 600, Location = ResponseCacheLocation.Any)]
         public async Task<IActionResult> Richmond()
         {
             var games = await (_repository.GetGamesForRichmondForThisYear());
