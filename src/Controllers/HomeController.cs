@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using afl_dakboard.Models;
+using Newtonsoft.Json;
 
 namespace afl_dakboard.Controllers
 {
@@ -30,7 +31,11 @@ namespace afl_dakboard.Controllers
         {
             var games = await (_repository.GetGamesForRichmondForThisYear());
 
-            return View(new RichmondViewModel(games));
+            var lastGame = games.OrderByDescending(x => x.round).First(x => x.complete > 0);
+            var nextGame = games.OrderBy(x => x.round).FirstOrDefault(x => x.complete < 100);
+            _logger.LogInformation("Last game is {Game}", JsonConvert.SerializeObject(lastGame));
+            _logger.LogInformation("Next game is {Game}", JsonConvert.SerializeObject(nextGame));
+            return View(new RichmondViewModel(lastGame, nextGame));
         }
 
         public IActionResult Privacy()

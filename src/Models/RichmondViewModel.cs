@@ -9,29 +9,35 @@ namespace afl_dakboard.Controllers
 {
     public class RichmondViewModel
     {
-        public int? RichmondGoals, RichmondBehinds, RichmondScore;
-        public int? OppositionGoals, OppositionBehinds, OppositionScore;
-        public readonly Game NextGame;
-        public readonly Game LastGame;
-        public readonly string Opposition;
+        public int? RichmondGoals { get; }
+        public int? RichmondBehinds { get; }
+        public int? RichmondScore { get; }
+        public int? OppositionGoals { get; }
+        public int? OppositionBehinds { get; }
+        public int? OppositionScore { get; }
+        public string Opposition { get; }
+        public string LastGameDate { get; }
+        public string NextGameDate { get; }
+        public string NextGameVenue { get; }
 
-        public RichmondViewModel(List<Game> games)
+        public RichmondViewModel(Game lastGame, Game nextGame)
         {
-            LastGame = games.OrderByDescending(x => x.round).First(x => x.complete > 0);
-            NextGame = games.OrderBy(x => x.round).FirstOrDefault(x => x.complete < 100);
-            var dateTime = DateTime.Parse(NextGame.date);
-            LastGame.date = DateTime.Parse(LastGame.date).Humanize(utcDate: false);
-            if (LastGame.hteam == "Richmond")
+            if (lastGame.hteam == "Richmond")
             {
-                (RichmondGoals, RichmondBehinds, RichmondScore) = (LastGame.hgoals, LastGame.hbehinds, LastGame.hscore);
-                (OppositionGoals, OppositionBehinds, OppositionScore, Opposition) = (LastGame.agoals, LastGame.abehinds, LastGame.ascore, LastGame.ateam);
+                (RichmondGoals, RichmondBehinds, RichmondScore) = (lastGame.hgoals, lastGame.hbehinds, lastGame.hscore);
+                (OppositionGoals, OppositionBehinds, OppositionScore, Opposition) = (lastGame.agoals, lastGame.abehinds, lastGame.ascore, lastGame.ateam);
             }
             else
             {
-                (RichmondGoals, RichmondBehinds, RichmondScore) = (LastGame.agoals, LastGame.abehinds, LastGame.ascore);
-                (OppositionGoals, OppositionBehinds, OppositionScore, Opposition) = (LastGame.hgoals, LastGame.hbehinds, LastGame.hscore, LastGame.hteam);
+                (RichmondGoals, RichmondBehinds, RichmondScore) = (lastGame.agoals, lastGame.abehinds, lastGame.ascore);
+                (OppositionGoals, OppositionBehinds, OppositionScore, Opposition) = (lastGame.hgoals, lastGame.hbehinds, lastGame.hscore, lastGame.hteam);
             }
-            NextGame.date = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({dateTime.Humanize(utcDate: false)})";
+
+            LastGameDate = DateTime.Parse(lastGame.date).Humanize(utcDate: false);
+
+            var dateTime = DateTime.Parse(nextGame.date);
+            NextGameDate = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({dateTime.Humanize(utcDate: false)})";
+            NextGameVenue = nextGame.venue;
         }
     }
 }

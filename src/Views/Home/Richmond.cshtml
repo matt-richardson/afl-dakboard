@@ -12,7 +12,7 @@
             <thead>
             <tr>
                 <th colspan="1">Last Game:</th>
-                <th colspan="3">@Model.LastGame.date</th>
+                <th colspan="3">@Model.LastGameDate</th>
             </tr>
             <tr>
                 <th>Team</th>
@@ -38,12 +38,12 @@
 </div>
 <br/>
 <strong>Next Game:</strong><br/>
-@if (@Model.NextGame == null)
+@if (@Model.NextGameDate == null)
 {
     <text>unknown</text>
 }
 else
 {
-    @Model.NextGame.date<text> at </text>@Model.NextGame.venue
+    @Model.NextGameDate<text> at </text>@Model.NextGameVenue
 }
 
