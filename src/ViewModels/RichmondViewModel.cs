@@ -1,8 +1,10 @@
 using System;
+using System.Linq;
 using afl_dakboard.Models;
 using Humanizer;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using TimeZoneConverter;
 
 namespace afl_dakboard.ViewModels
 {
@@ -32,10 +34,12 @@ namespace afl_dakboard.ViewModels
                 (OppositionGoals, OppositionBehinds, OppositionScore, Opposition) = (lastGame.hgoals, lastGame.hbehinds, lastGame.hscore, lastGame.hteam);
             }
 
-            LastGameDate = DateTime.Parse(lastGame.date).Humanize(utcDate: false);
+            var timezone = TZConvert.GetTimeZoneInfo("AUS Eastern Standard Time");
+            var timeInMelbourne = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timezone);
+            LastGameDate = DateTime.Parse(lastGame.date).Humanize(dateToCompareAgainst: timeInMelbourne.DateTime);
 
             var dateTime = DateTime.Parse(nextGame.date);
-            NextGameDate = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({dateTime.Humanize(utcDate: false)})";
+            NextGameDate = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({dateTime.Humanize(dateToCompareAgainst: timeInMelbourne.DateTime)})";
             NextGameVenue = nextGame.venue;
             logger.LogInformation("Rendering {name} with {json}", nameof(RichmondViewModel), JsonConvert.SerializeObject(this));
         }
