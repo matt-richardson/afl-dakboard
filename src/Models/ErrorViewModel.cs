@@ -2,7 +2,12 @@ namespace afl_dakboard.Models
 {
     public class ErrorViewModel
     {
-        public string RequestId { get; set; }
+        public ErrorViewModel(string requestId)
+        {
+            RequestId = requestId;
+        }
+
+        public string RequestId { get; }
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
     }
