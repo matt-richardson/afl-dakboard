@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using afl_dakboard.Models;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -11,37 +12,55 @@ namespace afl_dakboard.Controllers
 {
     public class Repository
     {
+        private const string TeamsCacheKey = "teams";
+        private const string StandingsCacheKey = "standings";
+        private const string LastGameCacheKey = "lastgame";
+        private const string NextGameCacheKey = "nextgame";
         private readonly ILogger<Repository> _logger;
+        private readonly IMemoryCache _memoryCache;
 
-        public Repository(ILogger<Repository> logger)
+        public Repository(ILogger<Repository> logger, IMemoryCache memoryCache)
         {
             _logger = logger;
+            _memoryCache = memoryCache;
         }
 
         public async Task<List<Team>> GetTeams()
         {
+            if (_memoryCache.TryGetValue<List<Team>>(TeamsCacheKey, out var teams))
+                return teams;
+
             var url = "https://api.squiggle.com.au/?q=teams";
             _logger.LogInformation("Getting teams from {Url}", url);
             var httpClient = new HttpClient();
             var json = await httpClient.GetStringAsync(url);
-            var response = JsonConvert.DeserializeObject<TeamsRoot>(json);
-            _logger.LogInformation("Found {Count} teams", response.teams.Count);
-            return response.teams;
+            teams = JsonConvert.DeserializeObject<TeamsRoot>(json).teams;
+            _logger.LogInformation("Found {Count} teams", teams.Count);
+            _memoryCache.Set(TeamsCacheKey, teams, DateTime.Now.AddDays(1));
+            return teams;
         }
 
         public async Task<List<Standing>> GetStandings()
         {
+            if (_memoryCache.TryGetValue<List<Standing>>(StandingsCacheKey, out var standings))
+                return standings;
+
             var httpClient = new HttpClient();
             var url = "https://api.squiggle.com.au/?q=standings";
             _logger.LogInformation("Getting standings from {Url}", url);
             var json = await httpClient.GetStringAsync(url);
-            var response = JsonConvert.DeserializeObject<StandingsRoot>(json);
-            _logger.LogInformation("Found {Count} games", response.standings.Count);
-            return response.standings;
+            standings = JsonConvert.DeserializeObject<StandingsRoot>(json).standings;
+            _logger.LogInformation("Found {Count} games", standings.Count);
+            _memoryCache.Set(StandingsCacheKey, standings, DateTime.Now.AddHours(1));
+            return standings;
         }
 
-        public async Task<List<Game>> GetGamesForRichmondForThisYear()
+        public async Task<(Game lastGame, Game? nextGame)> GetLastAndNextGamesForRichmond()
         {
+            if (_memoryCache.TryGetValue<Game>(LastGameCacheKey, out var lastGame) &&
+                _memoryCache.TryGetValue<Game>(NextGameCacheKey, out var nextGame))
+                return (lastGame, nextGame);
+
             var httpClient = new HttpClient();
             var url = "https://api.squiggle.com.au/?q=games;year=" + DateTime.Now.Year;
             _logger.LogInformation("Getting games for Richmond for this year from {Url}", url);
@@ -49,7 +68,35 @@ namespace afl_dakboard.Controllers
             var response = JsonConvert.DeserializeObject<GamesRoot>(json);
             var games = response.games.Where(x => x.ateam == "Richmond" || x.hteam == "Richmond").ToList();
             _logger.LogInformation("Found {Count} games", games.Count);
-            return games;
+            lastGame = games.OrderByDescending(x => x.round).First(x => x.complete > 0);
+            nextGame = games.OrderBy(x => x.round).FirstOrDefault(x => x.complete < 100);
+
+            var expiration = GetGameCacheExpiration(lastGame, nextGame);
+            _memoryCache.Set(LastGameCacheKey, lastGame, expiration);
+            _memoryCache.Set(NextGameCacheKey, nextGame, expiration);
+
+            return (lastGame, nextGame);
+        }
+
+        private DateTimeOffset GetGameCacheExpiration(Game lastGame, Game? nextGame)
+        {
+            //last game is still in progress
+            if (lastGame.complete < 100)
+                return DateTime.Now.AddMinutes(10);
+
+            //no next game
+            if (nextGame == null)
+                return DateTime.Now.AddDays(1);
+
+            //next game has started (not sure if this can happen, but hey
+            if (nextGame.complete > 0)
+                return DateTime.Now.AddMinutes(10);
+
+            //next game is soon (well, today)
+            if (DateTime.Parse(nextGame.date).ToString("d") == DateTime.Now.ToString("d"))
+                return DateTime.Now.AddMinutes(10);
+
+            return DateTime.Now.AddHours(6);
         }
     }
 }

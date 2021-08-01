@@ -37,12 +37,11 @@ namespace afl_dakboard.Controllers
         [ResponseCache(Duration = 600, Location = ResponseCacheLocation.Any)]
         public async Task<IActionResult> Richmond()
         {
-            var games = await (_repository.GetGamesForRichmondForThisYear());
+            var (lastGame, nextGame) = await _repository.GetLastAndNextGamesForRichmond();
 
-            var lastGame = games.OrderByDescending(x => x.round).First(x => x.complete > 0);
-            var nextGame = games.OrderBy(x => x.round).FirstOrDefault(x => x.complete < 100);
             _logger.LogInformation("Last game is {Game}", JsonConvert.SerializeObject(lastGame));
             _logger.LogInformation("Next game is {Game}", JsonConvert.SerializeObject(nextGame));
+
             return View(new RichmondViewModel(lastGame, nextGame, _logger));
         }
 
