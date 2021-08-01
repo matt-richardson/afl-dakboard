@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using afl_dakboard.Models;
 using Humanizer;
 using Microsoft.Extensions.Logging;
@@ -18,30 +17,34 @@ namespace afl_dakboard.ViewModels
         public int? OppositionScore { get; }
         public string Opposition { get; }
         public string LastGameDate { get; }
-        public string NextGameDate { get; }
-        public string NextGameVenue { get; }
+        public string? NextGameDate { get; }
+        public string? NextGameVenue { get; }
 
-        public RichmondViewModel(Game lastGame, Game nextGame, ILogger logger)
+        public RichmondViewModel(Game lastGame, Game? nextGame, ILogger logger)
         {
-            if (lastGame.hteam == "Richmond")
+            if (lastGame.HomeTeam == "Richmond")
             {
-                (RichmondGoals, RichmondBehinds, RichmondScore) = (lastGame.hgoals, lastGame.hbehinds, lastGame.hscore);
-                (OppositionGoals, OppositionBehinds, OppositionScore, Opposition) = (lastGame.agoals, lastGame.abehinds, lastGame.ascore, lastGame.ateam);
+                (RichmondGoals, RichmondBehinds, RichmondScore) = (lastGame.HomeGoals, lastGame.HomeBehinds, lastGame.HomeScore);
+                (OppositionGoals, OppositionBehinds, OppositionScore, Opposition) = (lastGame.AwayGoals, lastGame.AwayBehinds, lastGame.AwayScore, lastGame.AwayTeam);
             }
             else
             {
-                (RichmondGoals, RichmondBehinds, RichmondScore) = (lastGame.agoals, lastGame.abehinds, lastGame.ascore);
-                (OppositionGoals, OppositionBehinds, OppositionScore, Opposition) = (lastGame.hgoals, lastGame.hbehinds, lastGame.hscore, lastGame.hteam);
+                (RichmondGoals, RichmondBehinds, RichmondScore) = (lastGame.AwayGoals, lastGame.AwayBehinds, lastGame.AwayScore);
+                (OppositionGoals, OppositionBehinds, OppositionScore, Opposition) = (lastGame.HomeGoals, lastGame.HomeBehinds, lastGame.HomeScore, lastGame.HomeTeam);
             }
 
             var timezone = TZConvert.GetTimeZoneInfo("AUS Eastern Standard Time");
             var timeInMelbourne = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timezone);
-            LastGameDate = DateTime.Parse(lastGame.date).Humanize(dateToCompareAgainst: timeInMelbourne.DateTime);
+            LastGameDate = DateTime.Parse(lastGame.Date).Humanize(dateToCompareAgainst: timeInMelbourne.DateTime);
 
-            var dateTime = DateTime.Parse(nextGame.date);
-            NextGameDate = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({dateTime.Humanize(dateToCompareAgainst: timeInMelbourne.DateTime)})";
-            NextGameVenue = nextGame.venue;
-            logger.LogInformation("Rendering {name} with {json}", nameof(RichmondViewModel), JsonConvert.SerializeObject(this));
+            if (nextGame != null)
+            {
+                var dateTime = DateTime.Parse(nextGame.Date);
+                NextGameDate = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({dateTime.Humanize(dateToCompareAgainst: timeInMelbourne.DateTime)})";
+                NextGameVenue = nextGame.Venue;
+            }
+
+            logger.LogInformation("Rendering {Name} with {Json}", nameof(RichmondViewModel), JsonConvert.SerializeObject(this));
         }
     }
 }

@@ -1,15 +1,24 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace afl_dakboard.Models
 {
     public class Team    {
-        public int id { get; set; }
-        public string abbrev { get; set; }
-        public string name { get; set; }
-        public string logo { get; set; }
+        [JsonProperty("id")]
+        public int Id { get; set; }
+
+        [JsonProperty("abbrev")]
+        public string Abbreviation { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("logo")]
+        public string Logo { get; set; }
     }
 
     public class TeamsRoot    {
-        public List<Team> teams { get; set; }
+        [JsonProperty("teams")]
+        public List<Team> Teams { get; set; }
     }
 }

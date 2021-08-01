@@ -1,34 +1,80 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace afl_dakboard.Models
 {
     public class Game    {
-        public int is_final { get; set; }
-        public string roundname { get; set; }
-        public int hteamid { get; set; }
-        public int? winnerteamid { get; set; }
-        public int is_grand_final { get; set; }
-        public int year { get; set; }
-        public string updated { get; set; }
-        public int? hgoals { get; set; }
-        public int round { get; set; }
-        public string venue { get; set; }
-        public int? ascore { get; set; }
-        public int ateamid { get; set; }
-        public int? hscore { get; set; }
-        public string winner { get; set; }
-        public string ateam { get; set; }
-        public string hteam { get; set; }
-        public int? abehinds { get; set; }
-        public string tz { get; set; }
-        public int id { get; set; }
-        public int complete { get; set; }
-        public int? agoals { get; set; }
-        public int? hbehinds { get; set; }
-        public string date { get; set; }
+        [JsonProperty("is_final")]
+        public int IsFinal { get; set; }
+
+        [JsonProperty("roundname")]
+        public string RoundName { get; set; }
+
+        [JsonProperty("hteamid")]
+        public int HomeTeamId { get; set; }
+
+        [JsonProperty("winnerteamid")]
+        public int? WinnerTeamId { get; set; }
+
+        [JsonProperty("is_grand_final")]
+        public int IsGrandFinal { get; set; }
+
+        [JsonProperty("year")]
+        public int Year { get; set; }
+
+        [JsonProperty("updated")]
+        public string Updated { get; set; }
+
+        [JsonProperty("hgoals")]
+        public int? HomeGoals { get; set; }
+
+        [JsonProperty("round")]
+        public int Round { get; set; }
+
+        [JsonProperty("venue")]
+        public string Venue { get; set; }
+
+        [JsonProperty("ascore")]
+        public int? AwayScore { get; set; }
+
+        [JsonProperty("ateamid")]
+        public int AwayTeamId { get; set; }
+
+        [JsonProperty("hscore")]
+        public int? HomeScore { get; set; }
+
+        [JsonProperty("winner")]
+        public string Winner { get; set; }
+
+        [JsonProperty("ateam")]
+        public string AwayTeam { get; set; }
+
+        [JsonProperty("hteam")]
+        public string HomeTeam { get; set; }
+
+        [JsonProperty("abehinds")]
+        public int? AwayBehinds { get; set; }
+
+        [JsonProperty("tz")]
+        public string Tz { get; set; }
+
+        [JsonProperty("id")]
+        public int Id { get; set; }
+
+        [JsonProperty("complete")]
+        public int Complete { get; set; }
+
+        [JsonProperty("agoals")]
+        public int? AwayGoals { get; set; }
+
+        [JsonProperty("hbehinds")]
+        public int? HomeBehinds { get; set; }
+
+        [JsonProperty("date")]
+        public string Date { get; set; }
     }
 
     public class GamesRoot    {
-        public List<Game> games { get; set; }
+        public List<Game> Games { get; set; }
     }
 }

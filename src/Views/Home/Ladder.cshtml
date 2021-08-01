@@ -23,17 +23,17 @@
     @foreach (var standing in topTeams)
     {
         placing++;
-        var team = Model.Teams.First(x => x.name == standing.name);
+        var team = Model.Teams.First(x => x.Name == standing.Name);
         <partial name="Standing" model="new StandingViewModel(placing, team, standing)"/>
     }
-    @if (topTeams.All(x => x.name != "Richmond"))
+    @if (topTeams.All(x => x.Name != "Richmond"))
     {
-        placing = Model.Standings.FindIndex(x => x.name == "Richmond");
+        placing = Model.Standings.FindIndex(x => x.Name == "Richmond");
         if (placing > 9) {
             <tr><td colspan="6">...</td></tr>
         }
-        var team = Model.Teams.First(x => x.name == "Richmond");
-        var standing = Model.Standings.First(x => x.name == "Richmond");
+        var team = Model.Teams.First(x => x.Name == "Richmond");
+        var standing = Model.Standings.First(x => x.Name == "Richmond");
         <partial name="Standing" model="new StandingViewModel(placing, team, standing)"/>
     }
  </table>

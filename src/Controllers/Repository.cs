@@ -34,7 +34,7 @@ namespace afl_dakboard.Controllers
             _logger.LogInformation("Getting teams from {Url}", url);
             var httpClient = new HttpClient();
             var json = await httpClient.GetStringAsync(url);
-            teams = JsonConvert.DeserializeObject<TeamsRoot>(json).teams;
+            teams = JsonConvert.DeserializeObject<TeamsRoot>(json).Teams;
             _logger.LogInformation("Found {Count} teams", teams.Count);
             _memoryCache.Set(TeamsCacheKey, teams, DateTime.Now.AddDays(1));
             return teams;
@@ -49,7 +49,7 @@ namespace afl_dakboard.Controllers
             var url = "https://api.squiggle.com.au/?q=standings";
             _logger.LogInformation("Getting standings from {Url}", url);
             var json = await httpClient.GetStringAsync(url);
-            standings = JsonConvert.DeserializeObject<StandingsRoot>(json).standings;
+            standings = JsonConvert.DeserializeObject<StandingsRoot>(json).Standings;
             _logger.LogInformation("Found {Count} games", standings.Count);
             _memoryCache.Set(StandingsCacheKey, standings, DateTime.Now.AddHours(1));
             return standings;
@@ -66,10 +66,10 @@ namespace afl_dakboard.Controllers
             _logger.LogInformation("Getting games for Richmond for this year from {Url}", url);
             var json = await httpClient.GetStringAsync(url);
             var response = JsonConvert.DeserializeObject<GamesRoot>(json);
-            var games = response.games.Where(x => x.ateam == "Richmond" || x.hteam == "Richmond").ToList();
+            var games = response.Games.Where(x => x.AwayTeam == "Richmond" || x.HomeTeam == "Richmond").ToList();
             _logger.LogInformation("Found {Count} games", games.Count);
-            lastGame = games.OrderByDescending(x => x.round).First(x => x.complete > 0);
-            nextGame = games.OrderBy(x => x.round).FirstOrDefault(x => x.complete < 100);
+            lastGame = games.OrderByDescending(x => x.Round).First(x => x.Complete > 0);
+            nextGame = games.OrderBy(x => x.Round).FirstOrDefault(x => x.Complete < 100);
 
             var expiration = GetGameCacheExpiration(lastGame, nextGame);
             _memoryCache.Set(LastGameCacheKey, lastGame, expiration);
@@ -81,7 +81,7 @@ namespace afl_dakboard.Controllers
         private DateTimeOffset GetGameCacheExpiration(Game lastGame, Game? nextGame)
         {
             //last game is still in progress
-            if (lastGame.complete < 100)
+            if (lastGame.Complete < 100)
                 return DateTime.Now.AddMinutes(10);
 
             //no next game
@@ -89,11 +89,11 @@ namespace afl_dakboard.Controllers
                 return DateTime.Now.AddDays(1);
 
             //next game has started (not sure if this can happen, but hey
-            if (nextGame.complete > 0)
+            if (nextGame.Complete > 0)
                 return DateTime.Now.AddMinutes(10);
 
             //next game is soon (well, today)
-            if (DateTime.Parse(nextGame.date).ToString("d") == DateTime.Now.ToString("d"))
+            if (DateTime.Parse(nextGame.Date).ToString("d") == DateTime.Now.ToString("d"))
                 return DateTime.Now.AddMinutes(10);
 
             return DateTime.Now.AddHours(6);

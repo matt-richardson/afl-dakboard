@@ -1,27 +1,58 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace afl_dakboard.Models
 {
 // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
     public class Standing    {
-        public int goals_for { get; set; }
-        public int wins { get; set; }
-        public int @for { get; set; }
-        public string name { get; set; }
-        public int played { get; set; }
-        public int pts { get; set; }
-        public int rank { get; set; }
-        public double percentage { get; set; }
-        public int goals_against { get; set; }
-        public int id { get; set; }
-        public int behinds_for { get; set; }
-        public int against { get; set; }
-        public int losses { get; set; }
-        public int behinds_against { get; set; }
-        public int draws { get; set; }
+        [JsonProperty("goals_for")]
+        public int GoalsFor { get; set; }
+
+        [JsonProperty("wins")]
+        public int Wins { get; set; }
+
+        [JsonProperty("for")]
+        public int For { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("played")]
+        public int Played { get; set; }
+
+        [JsonProperty("pts")]
+        public int Pts { get; set; }
+
+        [JsonProperty("rank")]
+        public int Rank { get; set; }
+
+        [JsonProperty("percentage")]
+        public double Percentage { get; set; }
+
+        [JsonProperty("goals_against")]
+        public int GoalsAgainst { get; set; }
+
+        [JsonProperty("id")]
+        public int Id { get; set; }
+
+        [JsonProperty("behinds_for")]
+        public int BehindsFor { get; set; }
+
+        [JsonProperty("against")]
+        public int Against { get; set; }
+
+        [JsonProperty("losses")]
+        public int Losses { get; set; }
+
+        [JsonProperty("behinds_against")]
+        public int BehindsAgainst { get; set; }
+
+        [JsonProperty("draws")]
+        public int Draws { get; set; }
     }
 
     public class StandingsRoot    {
-        public List<Standing> standings { get; set; }
+        [JsonProperty("standings")]
+        public List<Standing> Standings { get; set; }
     }
 }
