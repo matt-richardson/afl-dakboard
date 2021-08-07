@@ -29,6 +29,7 @@ namespace afl_dakboard.Controllers
         {
             var teams = await _repository.GetTeams();
             var standings = await _repository.GetStandings();
+            _logger.LogInformation("Standings are {Standings}", JsonConvert.SerializeObject(standings));
 
             return View(new IndexViewModel(teams, standings));
         }

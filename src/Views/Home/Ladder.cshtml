@@ -28,7 +28,7 @@
     }
     @if (topTeams.All(x => x.Name != "Richmond"))
     {
-        placing = Model.Standings.FindIndex(x => x.Name == "Richmond");
+        placing = Model.Standings.FindIndex(x => x.Name == "Richmond") + 1;
         if (placing > 9) {
             <tr><td colspan="6">...</td></tr>
         }
