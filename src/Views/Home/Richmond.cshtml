@@ -37,13 +37,21 @@
     </div>
 </div>
 <br/>
-<strong>Next Game:</strong><br/>
 @if (@Model.NextGameDate == null)
 {
-    <text>unknown</text>
+    <strong>Next Game:</strong> <text>No more games until next year 😢</text>
 }
 else
 {
-    @Model.NextGameDate<text> at </text>@Model.NextGameVenue
+    <strong>Next Game:</strong> <text>Round #@Model.NextGameRound against @Model.NextGameTeam</text>
+    <br/>
+    @if (@Model.NextGameDate == null)
+    {
+        <text>unknown</text>
+    }
+    else
+    {
+        @Model.NextGameDate<text> at </text>
+        @Model.NextGameVenue
 }
-
+}

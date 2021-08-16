@@ -19,6 +19,8 @@ namespace afl_dakboard.ViewModels
         public string LastGameDate { get; }
         public string? NextGameDate { get; }
         public string? NextGameVenue { get; }
+        public int NextGameRound { get; }
+        public string? NextGameTeam { get; }
 
         public RichmondViewModel(Game lastGame, Game? nextGame, ILogger logger)
         {
@@ -42,6 +44,8 @@ namespace afl_dakboard.ViewModels
                 var dateTime = DateTime.Parse(nextGame.Date);
                 NextGameDate = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({dateTime.Humanize(dateToCompareAgainst: timeInMelbourne.DateTime)})";
                 NextGameVenue = nextGame.Venue;
+                NextGameRound = nextGame.Round;
+                NextGameTeam = nextGame.HomeTeam == "Richmond" ? nextGame.AwayTeam : nextGame.HomeTeam;
             }
 
             logger.LogInformation("Rendering {Name} with {Json}", nameof(RichmondViewModel), JsonConvert.SerializeObject(this));
