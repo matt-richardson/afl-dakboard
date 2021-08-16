@@ -9,7 +9,7 @@ namespace afl_dakboard.Models
         public Game(
             int isFinal,
             string roundName,
-            int homeTeamId,
+            int? homeTeamId,
             int? winnerTeamId,
             int isGrandFinal,
             int year,
@@ -18,7 +18,7 @@ namespace afl_dakboard.Models
             int round,
             string venue,
             int? awayScore,
-            int awayTeamId,
+            int? awayTeamId,
             int? homeScore,
             string winner,
             string awayTeam,
@@ -63,7 +63,7 @@ namespace afl_dakboard.Models
         public string RoundName { get; }
 
         [JsonProperty("hteamid")]
-        public int HomeTeamId { get; }
+        public int? HomeTeamId { get; }
 
         [JsonProperty("winnerteamid")]
         public int? WinnerTeamId { get; }
@@ -90,7 +90,7 @@ namespace afl_dakboard.Models
         public int? AwayScore { get; }
 
         [JsonProperty("ateamid")]
-        public int AwayTeamId { get; }
+        public int? AwayTeamId { get; }
 
         [JsonProperty("hscore")]
         public int? HomeScore { get; }
