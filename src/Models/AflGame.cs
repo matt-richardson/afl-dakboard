@@ -3,10 +3,10 @@ using Newtonsoft.Json;
 
 namespace afl_dakboard.Models
 {
-    public class Game
+    public class AflGame
     {
         [JsonConstructor]
-        public Game(
+        public AflGame(
             int isFinal,
             string roundName,
             int? homeTeamId,
@@ -129,11 +129,11 @@ namespace afl_dakboard.Models
     public class GamesRoot
     {
         [JsonConstructor]
-        public GamesRoot(List<Game> games)
+        public GamesRoot(List<AflGame> games)
         {
             Games = games;
         }
 
-        public List<Game> Games { get; }
+        public List<AflGame> Games { get; }
     }
 }

@@ -4,10 +4,10 @@ using Newtonsoft.Json;
 namespace afl_dakboard.Models
 {
 // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
-    public class Standing
+    public class AflStanding
     {
         [JsonConstructor]
-        public Standing(
+        public AflStanding(
             int goalsFor,
             int wins,
             int @for,
@@ -87,15 +87,15 @@ namespace afl_dakboard.Models
         public int Draws { get; }
     }
 
-    public class StandingsRoot
+    public class AflStandingsRoot
     {
         [JsonConstructor]
-        public StandingsRoot(List<Standing> standings)
+        public AflStandingsRoot(List<AflStanding> standings)
         {
             Standings = standings;
         }
 
         [JsonProperty("standings")]
-        public List<Standing> Standings { get; }
+        public List<AflStanding> Standings { get; }
     }
 }

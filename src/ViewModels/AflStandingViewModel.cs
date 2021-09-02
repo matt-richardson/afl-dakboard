@@ -2,9 +2,9 @@ using afl_dakboard.Models;
 
 namespace afl_dakboard.ViewModels
 {
-    public class StandingViewModel
+    public class AflStandingViewModel
     {
-        public StandingViewModel(int order, Team team, Standing standing)
+        public AflStandingViewModel(int order, AflTeam team, AflStanding standing)
         {
             Order = order;
             Team = team;
@@ -12,7 +12,7 @@ namespace afl_dakboard.ViewModels
         }
 
         public int Order { get; }
-        public Standing Standing { get; }
-        public Team Team { get; }
+        public AflStanding Standing { get; }
+        public AflTeam Team { get; }
     }
 }

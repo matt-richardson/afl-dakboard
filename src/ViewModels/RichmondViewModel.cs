@@ -22,7 +22,7 @@ namespace afl_dakboard.ViewModels
         public int NextGameRound { get; }
         public string? NextGameTeam { get; }
 
-        public RichmondViewModel(Game lastGame, Game? nextGame, ILogger logger)
+        public RichmondViewModel(AflGame lastGame, AflGame? nextGame, ILogger logger)
         {
             if (lastGame.HomeTeam == "Richmond")
             {

@@ -10,10 +10,10 @@ namespace afl_dakboard.Controllers
 {
     public class AflController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly Repository _repository;
+        private readonly ILogger<AflController> _logger;
+        private readonly AflRepository _repository;
 
-        public AflController(ILogger<HomeController> logger, Repository repository)
+        public AflController(ILogger<AflController> logger, AflRepository repository)
         {
             _logger = logger;
             _repository = repository;
@@ -25,7 +25,7 @@ namespace afl_dakboard.Controllers
             var standings = await _repository.GetStandings();
             _logger.LogInformation("Standings are {Standings}", JsonConvert.SerializeObject(standings));
 
-            return View(new IndexViewModel(teams, standings));
+            return View(new AflLadderViewModel(teams, standings));
         }
 
         public async Task<IActionResult> Richmond()

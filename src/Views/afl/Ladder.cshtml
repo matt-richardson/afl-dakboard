@@ -2,7 +2,7 @@
     ViewData["Title"] = "AFL Ladder";
 }
 @using afl_dakboard.ViewModels
-@model afl_dakboard.ViewModels.IndexViewModel
+@model afl_dakboard.ViewModels.AflLadderViewModel
 
 
 <table>
@@ -24,13 +24,13 @@
     {
         placing++;
         var team = Model.Teams.First(x => x.Name == standing.Name);
-        <partial name="_standing" model="new StandingViewModel(placing, team, standing)"/>
+        <partial name="_standing" model="new AflStandingViewModel(placing, team, standing)"/>
     }
     @if (topTeams.All(x => x.Name != "Richmond"))
     {
         placing = Model.Standings.FindIndex(x => x.Name == "Richmond") + 1;
         var team = Model.Teams.First(x => x.Name == "Richmond");
         var standing = Model.Standings.First(x => x.Name == "Richmond");
-        <partial name="_standing" model="new StandingViewModel(placing, team, standing)"/>
+        <partial name="_standing" model="new AflStandingViewModel(placing, team, standing)"/>
     }
  </table>

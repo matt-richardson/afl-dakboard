@@ -3,10 +3,10 @@ using Newtonsoft.Json;
 
 namespace afl_dakboard.Models
 {
-    public class Team
+    public class AflTeam
     {
         [JsonConstructor]
-        public Team(
+        public AflTeam(
             int id,
             string abbreviation,
             string name,
@@ -31,15 +31,15 @@ namespace afl_dakboard.Models
         public string Logo { get; }
     }
 
-    public class TeamsRoot
+    public class AflTeamsRoot
     {
         [JsonConstructor]
-        public TeamsRoot(List<Team> teams)
+        public AflTeamsRoot(List<AflTeam> teams)
         {
             Teams = teams;
         }
 
         [JsonProperty("teams")]
-        public List<Team> Teams { get; }
+        public List<AflTeam> Teams { get; }
     }
 }
