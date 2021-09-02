@@ -1,53 +1,15 @@
-﻿using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using afl_dakboard.Models;
-using afl_dakboard.ViewModels;
-using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace afl_dakboard.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly Repository _repository;
+        public IActionResult Index() => RedirectPermanent("/afl/ladder");
 
-        public HomeController(ILogger<HomeController> logger, Repository repository)
-        {
-            _logger = logger;
-            _repository = repository;
-        }
+        //handle legacy path
+        public IActionResult Ladder() => RedirectPermanent("/afl/ladder");
 
-        public IActionResult Index()
-        {
-            return RedirectPermanent("/home/ladder");
-        }
-
-        public async Task<IActionResult> Ladder()
-        {
-            var teams = await _repository.GetTeams();
-            var standings = await _repository.GetStandings();
-            _logger.LogInformation("Standings are {Standings}", JsonConvert.SerializeObject(standings));
-
-            return View(new IndexViewModel(teams, standings));
-        }
-
-        public async Task<IActionResult> Richmond()
-        {
-            var (lastGame, nextGame) = await _repository.GetLastAndNextGamesForRichmond();
-
-            _logger.LogInformation("Last game is {Game}", JsonConvert.SerializeObject(lastGame));
-            _logger.LogInformation("Next game is {Game}", JsonConvert.SerializeObject(nextGame));
-
-            return View(new RichmondViewModel(lastGame, nextGame, _logger));
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel(Activity.Current?.Id ?? HttpContext.TraceIdentifier));
-        }
+        //handle legacy path
+        public IActionResult Richmond() => RedirectPermanent("/afl/richmond");
     }
 }
