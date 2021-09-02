@@ -44,11 +44,6 @@ namespace afl_dakboard.Controllers
             return View(new RichmondViewModel(lastGame, nextGame, _logger));
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
