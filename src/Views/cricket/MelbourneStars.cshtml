@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "Melbourne Stars";
+}
+@model afl_dakboard.ViewModels.MelbourneStarsViewModel
+
+<div style="display: flex;">
+    <div>
+        <img src="/img/melbourne-stars-logo.png" height="128" width="128"/>
+    </div>
+    <div>
+        <table style="margin-top: 11px">
+            <thead>
+            <tr>
+                <th colspan="1">Last Game:</th>
+                <td colspan="3">@Model.LastGameDate</td>
+            </tr>
+            <tr>
+                <td colspan="4">@Model.Note</td>
+            </tr>
+            <tr>
+                <th></th>
+                <th>Wkts</th>
+                <th>Runs</th>
+                <th>Overs</th>
+            </tr>
+            </thead>
+            <tr>
+                <td>Melbourne Stars</td>
+                <td>@Model.MelbourneStarsWickets</td>
+                <td>@Model.MelbourneStarsScore</td>
+                <td>@Model.MelbourneStarsOvers</td>
+            </tr>
+            <tr>
+                <td>@Model.Opposition</td>
+                <td>@Model.OppositionWickets</td>
+                <td>@Model.OppositionScore</td>
+                <td>@Model.OppositionOvers</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<br/>
+@if (@Model.NextGameDate == null)
+{
+    <strong>Next Game:</strong> <text>No more games until next year 😢</text>
+}
+else
+{
+    <strong>Next Game:</strong> <text>Round #@Model.NextGameRound against @Model.NextGameTeam</text>
+    <br/>
+    @if (@Model.NextGameDate == null)
+    {
+        <text>unknown</text>
+    }
+    else
+    {
+        @Model.NextGameDate<text> at </text>
+        @Model.NextGameVenue
+}
+}
