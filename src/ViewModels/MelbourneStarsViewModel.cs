@@ -26,7 +26,7 @@ namespace afl_dakboard.ViewModels
         public string NextGameRound { get; }
         public string? NextGameTeam { get; }
 
-        public MelbourneStarsViewModel(CricketGame lastGame, CricketGame? nextGame, ILogger logger)
+        public MelbourneStarsViewModel(BigBashGame lastGame, BigBashGame? nextGame, ILogger logger)
         {
             var melbourneStarsRuns = lastGame.Runs.FirstOrDefault(x => x.TeamId == BigBashMelbourneStarsTeamId);
             (MelbourneStarsScore, MelbourneStarsWickets, MelbourneStarsOvers) = melbourneStarsRuns != null

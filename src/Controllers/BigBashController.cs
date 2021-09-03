@@ -8,12 +8,12 @@ using Newtonsoft.Json;
 
 namespace afl_dakboard.Controllers
 {
-    public class CricketController : Controller
+    public class BigBashController : Controller
     {
-        private readonly ILogger<CricketController> _logger;
-        private readonly CricketRepository _repository;
+        private readonly ILogger<BigBashController> _logger;
+        private readonly BigBashRepository _repository;
 
-        public CricketController(ILogger<CricketController> logger, CricketRepository repository)
+        public BigBashController(ILogger<BigBashController> logger, BigBashRepository repository)
         {
             _logger = logger;
             _repository = repository;
@@ -25,7 +25,7 @@ namespace afl_dakboard.Controllers
             var standings = await _repository.GetStandings();
             _logger.LogInformation("Standings are {Standings}", JsonConvert.SerializeObject(standings));
 
-            return View(new CricketLadderViewModel(teams, standings));
+            return View(new BigBashLadderViewModel(teams, standings));
         }
 
         public async Task<IActionResult> MelbourneStars()

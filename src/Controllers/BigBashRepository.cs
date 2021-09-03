@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace afl_dakboard.Controllers
 {
-    public class CricketRepository
+    public class BigBashRepository
     {
         //Twenty20 International == league_id 3
         //  2021 = season_id 507
@@ -29,50 +29,50 @@ namespace afl_dakboard.Controllers
         private const string StandingsCacheKey = "standings";
         private const string LastGameCacheKey = "lastgame";
         private const string NextGameCacheKey = "nextgame";
-        private readonly ILogger<CricketRepository> _logger;
+        private readonly ILogger<BigBashRepository> _logger;
         private readonly IMemoryCache _memoryCache;
 
-        public CricketRepository(ILogger<CricketRepository> logger, IMemoryCache memoryCache, IConfiguration configuration)
+        public BigBashRepository(ILogger<BigBashRepository> logger, IMemoryCache memoryCache, IConfiguration configuration)
         {
             _logger = logger;
             _memoryCache = memoryCache;
             _apiToken = configuration["SportMonks:ApiToken"];
         }
 
-        public async Task<IReadOnlyList<CricketTeam>> GetTeams()
+        public async Task<IReadOnlyList<BigBashTeam>> GetTeams()
         {
-            if (_memoryCache.TryGetValue<IReadOnlyList<CricketTeam>>(TeamsCacheKey, out var teams))
+            if (_memoryCache.TryGetValue<IReadOnlyList<BigBashTeam>>(TeamsCacheKey, out var teams))
                 return teams;
 
             var url = $"https://cricket.sportmonks.com/api/v2.0/teams?api_token={_apiToken}";
             _logger.LogInformation("Getting teams from {Url}", url.Replace(_apiToken, "xxxxxxxxxx"));
             var httpClient = new HttpClient();
             var json = await httpClient.GetStringAsync(url);
-            teams = JsonConvert.DeserializeObject<CricketTeamsRoot>(json).Teams;
+            teams = JsonConvert.DeserializeObject<BigBashTeamsRoot>(json).Teams;
             _logger.LogInformation("Found {Count} teams", teams.Count);
             _memoryCache.Set(TeamsCacheKey, teams, DateTime.Now.AddDays(1));
             return teams;
         }
 
-        public async Task<IReadOnlyList<CricketStanding>> GetStandings()
+        public async Task<IReadOnlyList<BigBashStanding>> GetStandings()
         {
-            if (_memoryCache.TryGetValue<IReadOnlyList<CricketStanding>>(StandingsCacheKey, out var standings))
+            if (_memoryCache.TryGetValue<IReadOnlyList<BigBashStanding>>(StandingsCacheKey, out var standings))
                 return standings;
 
             var httpClient = new HttpClient();
             var url = $"https://cricket.sportmonks.com/api/v2.0/standings/season/{BigBash20212022SeasonId}?api_token={_apiToken}";
             _logger.LogInformation("Getting standings from {Url}", url.Replace(_apiToken, "xxxxxxxxxx"));
             var json = await httpClient.GetStringAsync(url);
-            standings = JsonConvert.DeserializeObject<CricketStandingsRoot>(json).Standings;
+            standings = JsonConvert.DeserializeObject<BigBashStandingsRoot>(json).Standings;
             _logger.LogInformation("Found {Count} standings", standings.Count);
             _memoryCache.Set(StandingsCacheKey, standings, DateTime.Now.AddHours(1));
             return standings;
         }
 
-        public async Task<(CricketGame lastGame, CricketGame? nextGame)> GetLastAndNextGamesForMelbourneStars()
+        public async Task<(BigBashGame lastGame, BigBashGame? nextGame)> GetLastAndNextGamesForMelbourneStars()
         {
-            if (_memoryCache.TryGetValue<CricketGame>(LastGameCacheKey, out var lastGame) &&
-                _memoryCache.TryGetValue<CricketGame>(NextGameCacheKey, out var nextGame))
+            if (_memoryCache.TryGetValue<BigBashGame>(LastGameCacheKey, out var lastGame) &&
+                _memoryCache.TryGetValue<BigBashGame>(NextGameCacheKey, out var nextGame))
                 return (lastGame, nextGame);
 
             //todo: deal with pagination (maybe?)
@@ -82,7 +82,7 @@ namespace afl_dakboard.Controllers
             var localGamesUrl = $"https://cricket.sportmonks.com/api/v2.0/fixtures?filter[season_id]={BigBash20212022SeasonId}&include=runs,venue,localteam,visitorteam&filter[localteam_id]={BigBashMelbourneStarsTeamId}&api_token={_apiToken}";
             _logger.LogInformation("Getting games for Melbourne Stars from {Url}", localGamesUrl.Replace(_apiToken, "xxxxxxxxxx"));
             var localGamesJson = await httpClient.GetStringAsync(localGamesUrl);
-            var localGamesResponse = JsonConvert.DeserializeObject<CricketGamesRoot>(localGamesJson);
+            var localGamesResponse = JsonConvert.DeserializeObject<BigBashGamesRoot>(localGamesJson);
 
             if (localGamesResponse.Meta.Total > localGamesResponse.Meta.PerPage)
                 throw new ApplicationException("We got more games back than we currently handle. Need to deal with pagination.");
@@ -90,7 +90,7 @@ namespace afl_dakboard.Controllers
             var awayGamesUrl = $"https://cricket.sportmonks.com/api/v2.0/fixtures?filter[season_id]={BigBash20212022SeasonId}&include=runs,venue,localteam,visitorteam&filter[visitorteam_id]={BigBashMelbourneStarsTeamId}&api_token={_apiToken}";
             _logger.LogInformation("Getting games for Melbourne Stars from {Url}", awayGamesUrl.Replace(_apiToken, "xxxxxxxxxx"));
             var awayGamesJson = await httpClient.GetStringAsync(awayGamesUrl);
-            var awayGamesResponse = JsonConvert.DeserializeObject<CricketGamesRoot>(awayGamesJson);
+            var awayGamesResponse = JsonConvert.DeserializeObject<BigBashGamesRoot>(awayGamesJson);
 
             if (awayGamesResponse.Meta.Total > awayGamesResponse.Meta.PerPage)
                 throw new ApplicationException("We got more games back than we currently handle. Need to deal with pagination.");
@@ -108,19 +108,19 @@ namespace afl_dakboard.Controllers
             return (lastGame, nextGame);
         }
 
-        private bool IsComplete(CricketGame cricketGame)
+        private bool IsComplete(BigBashGame bigBashGame)
         {
-            return cricketGame.Status switch
+            return bigBashGame.Status switch
             {
                 "Finished" => true,
                 "Aban." => true,
                 "Cancl." => true,
                 "NS" => false,
-                _ => throw new ApplicationException($"Unknown game status: {cricketGame.Status}")
+                _ => throw new ApplicationException($"Unknown game status: {bigBashGame.Status}")
             };
         }
 
-        private DateTimeOffset GetGameCacheExpiration(CricketGame lastGame, CricketGame? nextGame)
+        private DateTimeOffset GetGameCacheExpiration(BigBashGame lastGame, BigBashGame? nextGame)
         {
             //last game has finished
             if (IsComplete(lastGame))
