@@ -126,10 +126,10 @@ namespace afl_dakboard.Models
         public string Date { get; }
     }
 
-    public class GamesRoot
+    public class AflGamesRoot
     {
         [JsonConstructor]
-        public GamesRoot(List<AflGame> games)
+        public AflGamesRoot(List<AflGame> games)
         {
             Games = games;
         }

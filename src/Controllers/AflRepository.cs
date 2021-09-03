@@ -65,7 +65,7 @@ namespace afl_dakboard.Controllers
             var url = "https://api.squiggle.com.au/?q=games;year=" + DateTime.Now.Year;
             _logger.LogInformation("Getting games for Richmond for this year from {Url}", url);
             var json = await httpClient.GetStringAsync(url);
-            var response = JsonConvert.DeserializeObject<GamesRoot>(json);
+            var response = JsonConvert.DeserializeObject<AflGamesRoot>(json);
             var games = response.Games.Where(x => x.AwayTeam == "Richmond" || x.HomeTeam == "Richmond").ToList();
             _logger.LogInformation("Found {Count} games", games.Count);
             lastGame = games.OrderByDescending(x => x.Round).First(x => x.Complete > 0);
