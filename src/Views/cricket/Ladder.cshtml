@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Big Bash Ladder";
+}
+@using afl_dakboard.ViewModels
+@model afl_dakboard.ViewModels.CricketLadderViewModel
+
+
+<table>
+    <thead>
+    <th></th>
+    <th colspan="2">Team</th>
+    <th>P</th>
+    <th>W</th>
+    <th>L</th>
+    <th>D</th>
+    <th>Pts</th>
+    </thead>
+    @{
+        var placing = 0;
+        var topTeams = Model.Standings.Take(8).ToArray();
+        var melbourneStars = Model.Teams.First(x => x.Name == "Melbourne Stars");
+    }
+    @foreach (var standing in topTeams)
+    {
+        placing++;
+        var team = Model.Teams.First(x => x.Id == standing.TeamId);
+        <partial name="_standing" model="new CricketStandingViewModel(placing, team, standing)"/>
+    }
+    @if (topTeams.All(x => x.TeamId != melbourneStars.Id))
+    {
+        placing = Model.Standings.ToList().FindIndex(x => x.TeamId == melbourneStars.Id) + 1;
+        var standing = Model.Standings.First(x => x.TeamId == melbourneStars.Id);
+        <partial name="_standing" model="new CricketStandingViewModel(placing, melbourneStars, standing)"/>
+    }
+ </table>

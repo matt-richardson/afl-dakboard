@@ -27,6 +27,7 @@ namespace afl_dakboard
                 .AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
             services.AddSingleton<AflRepository>();
+            services.AddSingleton<CricketRepository>();
             services.AddSingleton<IMemoryCache, MemoryCache>();
         }
 
