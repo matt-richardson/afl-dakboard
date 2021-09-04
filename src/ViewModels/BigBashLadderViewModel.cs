@@ -5,10 +5,10 @@ namespace afl_dakboard.ViewModels
 {
     public class BigBashLadderViewModel
     {
-        public IReadOnlyList<BigBashTeam> Teams { get; }
-        public IReadOnlyList<BigBashStanding> Standings { get; }
+        public IReadOnlyList<CricketTeam> Teams { get; }
+        public IReadOnlyList<CricketStanding> Standings { get; }
 
-        public BigBashLadderViewModel(IReadOnlyList<BigBashTeam> teams, IReadOnlyList<BigBashStanding> standings)
+        public BigBashLadderViewModel(IReadOnlyList<CricketTeam> teams, IReadOnlyList<CricketStanding> standings)
         {
             Teams = teams;
             Standings = standings;

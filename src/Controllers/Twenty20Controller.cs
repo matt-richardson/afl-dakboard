@@ -8,12 +8,12 @@ using Newtonsoft.Json;
 
 namespace afl_dakboard.Controllers
 {
-    public class BigBashController : Controller
+    public class Twenty20Controller : Controller
     {
-        private readonly ILogger<BigBashController> _logger;
-        private readonly BigBashRepository _repository;
+        private readonly ILogger<Twenty20Controller> _logger;
+        private readonly Twenty20Repository _repository;
 
-        public BigBashController(ILogger<BigBashController> logger, BigBashRepository repository)
+        public Twenty20Controller(ILogger<Twenty20Controller> logger, Twenty20Repository repository)
         {
             _logger = logger;
             _repository = repository;
@@ -28,9 +28,9 @@ namespace afl_dakboard.Controllers
             return View(new BigBashLadderViewModel(teams, standings));
         }
 
-        public async Task<IActionResult> MelbourneStars()
+        public async Task<IActionResult> Australia()
         {
-            var (lastGame, nextGame) = await _repository.GetLastAndNextGamesForMelbourneStars();
+            var (lastGame, nextGame) = await _repository.GetLastAndNextGamesForAustralia();
 
             _logger.LogInformation("Last game is {Game}", JsonConvert.SerializeObject(lastGame));
             _logger.LogInformation("Next game is {Game}", JsonConvert.SerializeObject(nextGame));

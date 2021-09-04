@@ -8,13 +8,11 @@ using TimeZoneConverter;
 
 namespace afl_dakboard.ViewModels
 {
-    public class MelbourneStarsViewModel
+    public class CricketViewModel
     {
-        private const int BigBashMelbourneStarsTeamId = 51;
-
-        public int? MelbourneStarsWickets { get; }
-        public double MelbourneStarsOvers { get; }
-        public int? MelbourneStarsScore { get; }
+        public int? OurTeamWickets { get; }
+        public double OurTeamOvers { get; }
+        public int? OurTeamScore { get; }
         public int? OppositionWickets { get; }
         public double OppositionOvers { get; }
         public int? OppositionScore { get; }
@@ -23,22 +21,22 @@ namespace afl_dakboard.ViewModels
         public string Note { get; }
         public string? NextGameDate { get; }
         public string? NextGameVenue { get; }
-        public string NextGameRound { get; }
+        public string? NextGameRound { get; }
         public string? NextGameTeam { get; }
 
-        public MelbourneStarsViewModel(BigBashGame lastGame, BigBashGame? nextGame, ILogger logger)
+        public CricketViewModel(CricketGame lastGame, CricketGame? nextGame, ILogger logger, int ourTeamId)
         {
-            var melbourneStarsRuns = lastGame.Runs.FirstOrDefault(x => x.TeamId == BigBashMelbourneStarsTeamId);
-            (MelbourneStarsScore, MelbourneStarsWickets, MelbourneStarsOvers) = melbourneStarsRuns != null
-                ? (melbourneStarsRuns.Score, melbourneStarsRuns.Wickets, melbourneStarsRuns.Overs)
+            var ourTeamRuns = lastGame.Runs.FirstOrDefault(x => x.TeamId == ourTeamId);
+            (OurTeamScore, OurTeamWickets, OurTeamOvers) = ourTeamRuns != null
+                ? (ourTeamRuns.Score, ourTeamRuns.Wickets, ourTeamRuns.Overs)
                 : (0, 0, 0);
 
-            var oppositionRuns = lastGame.Runs.FirstOrDefault(x => x.TeamId != BigBashMelbourneStarsTeamId);
+            var oppositionRuns = lastGame.Runs.FirstOrDefault(x => x.TeamId != ourTeamId);
             (OppositionScore, OppositionWickets, OppositionOvers) = oppositionRuns != null
                 ? (oppositionRuns.Score, oppositionRuns.Wickets, oppositionRuns.Overs)
                 : (0, 0, 0);
 
-            Opposition = lastGame.LocalTeamId == BigBashMelbourneStarsTeamId
+            Opposition = lastGame.LocalTeamId == ourTeamId
                 ? lastGame.VisitorTeam.Name
                 : lastGame.LocalTeam.Name;
 
@@ -53,10 +51,10 @@ namespace afl_dakboard.ViewModels
                 NextGameDate = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({dateTime.Humanize(dateToCompareAgainst: timeInMelbourne.DateTime)})";
                 NextGameVenue = nextGame.Venue.Name;
                 NextGameRound = nextGame.Round;
-                NextGameTeam = nextGame.LocalTeamId == BigBashMelbourneStarsTeamId ? nextGame.VisitorTeam.Name : nextGame.LocalTeam.Name;
+                NextGameTeam = nextGame.LocalTeamId == ourTeamId ? nextGame.VisitorTeam.Name : nextGame.LocalTeam.Name;
             }
 
-            logger.LogInformation("Rendering {Name} with {Json}", nameof(MelbourneStarsViewModel), JsonConvert.SerializeObject(this));
+            logger.LogInformation("Rendering {Name} with {Json}", nameof(CricketViewModel), JsonConvert.SerializeObject(this));
         }
     }
 }

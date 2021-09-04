@@ -5,10 +5,10 @@ using Newtonsoft.Json;
 namespace afl_dakboard.Models
 {
 // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
-    public class BigBashTeam
+    public class CricketTeam
     {
         [JsonConstructor]
-        public BigBashTeam(
+        public CricketTeam(
             [JsonProperty("resource")] string resource,
             [JsonProperty("id")] int id,
             [JsonProperty("name")] string name,
@@ -54,17 +54,17 @@ namespace afl_dakboard.Models
         public DateTime UpdatedAt { get; }
     }
 
-    public class BigBashTeamsRoot
+    public class CricketTeamsRoot
     {
         [JsonConstructor]
-        public BigBashTeamsRoot(
-            [JsonProperty("data")] List<BigBashTeam> data
+        public CricketTeamsRoot(
+            [JsonProperty("data")] List<CricketTeam> data
         )
         {
             Teams = data;
         }
 
         [JsonProperty("data")]
-        public IReadOnlyList<BigBashTeam> Teams { get; }
+        public IReadOnlyList<CricketTeam> Teams { get; }
     }
 }

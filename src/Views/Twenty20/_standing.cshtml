@@ -1,0 +1,14 @@
+@model afl_dakboard.ViewModels.BigBashStandingViewModel
+
+<tr>
+    <td>@Model.Order</td>
+    <td>
+        <img src=@Model.Team.ImagePath height="16" width="16"/>
+    </td>
+    <td>@Model.Team.Name</td>
+    <td>@Model.Standing.Played</td>
+    <td>@Model.Standing.Won</td>
+    <td>@Model.Standing.Lost</td>
+    <td>@Model.Standing.Draw</td>
+    <td>@Model.Standing.Points</td>
+</tr>

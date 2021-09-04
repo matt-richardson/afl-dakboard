@@ -54,10 +54,10 @@ namespace afl_dakboard.Models
         public DateTime UpdatedAt { get; }
     }
 
-    public class BigBashStanding
+    public class CricketStanding
     {
         [JsonConstructor]
-        public BigBashStanding(
+        public CricketStanding(
             [JsonProperty("resource")] string resource,
             [JsonProperty("legend_id")] int? legendId,
             [JsonProperty("team_id")] int teamId,
@@ -168,17 +168,17 @@ namespace afl_dakboard.Models
         public Legend Legend { get; }
     }
 
-    public class BigBashStandingsRoot
+    public class CricketStandingsRoot
     {
         [JsonConstructor]
-        public BigBashStandingsRoot(
-            [JsonProperty("data")] List<BigBashStanding> data
+        public CricketStandingsRoot(
+            [JsonProperty("data")] List<CricketStanding> data
         )
         {
             Standings = data;
         }
 
         [JsonProperty("data")]
-        public IReadOnlyList<BigBashStanding> Standings { get; }
+        public IReadOnlyList<CricketStanding> Standings { get; }
     }
 }

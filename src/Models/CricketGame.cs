@@ -177,10 +177,10 @@ namespace afl_dakboard.Models
         public DateTime UpdatedAt { get; }
     }
 
-    public class BigBashGame
+    public class CricketGame
     {
         [JsonConstructor]
-        public BigBashGame(
+        public CricketGame(
             [JsonProperty("resource")] string resource,
             [JsonProperty("id")] int id,
             [JsonProperty("league_id")] int leagueId,
@@ -434,12 +434,12 @@ namespace afl_dakboard.Models
         [JsonConstructor]
         public Meta(
             [JsonProperty("current_page")] int currentPage,
-            [JsonProperty("from")] int from,
+            [JsonProperty("from")] int? from,
             [JsonProperty("last_page")] int lastPage,
             [JsonProperty("links")] List<Link> links,
             [JsonProperty("path")] string path,
             [JsonProperty("per_page")] int perPage,
-            [JsonProperty("to")] int to,
+            [JsonProperty("to")] int? to,
             [JsonProperty("total")] int total
         )
         {
@@ -457,7 +457,7 @@ namespace afl_dakboard.Models
         public int CurrentPage { get; }
 
         [JsonProperty("from")]
-        public int From { get; }
+        public int? From { get; }
 
         [JsonProperty("last_page")]
         public int LastPage { get; }
@@ -472,17 +472,17 @@ namespace afl_dakboard.Models
         public int PerPage { get; }
 
         [JsonProperty("to")]
-        public int To { get; }
+        public int? To { get; }
 
         [JsonProperty("total")]
         public int Total { get; }
     }
 
-    public class BigBashGamesRoot
+    public class CricketGamesRoot
     {
         [JsonConstructor]
-        public BigBashGamesRoot(
-            [JsonProperty("data")] List<BigBashGame> data,
+        public CricketGamesRoot(
+            [JsonProperty("data")] List<CricketGame> data,
             [JsonProperty("links")] Links links,
             [JsonProperty("meta")] Meta meta
         )
@@ -493,7 +493,7 @@ namespace afl_dakboard.Models
         }
 
         [JsonProperty("data")]
-        public IReadOnlyList<BigBashGame> Games { get; }
+        public IReadOnlyList<CricketGame> Games { get; }
 
         [JsonProperty("links")]
         public Links Links { get; }

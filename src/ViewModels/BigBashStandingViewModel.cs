@@ -4,7 +4,7 @@ namespace afl_dakboard.ViewModels
 {
     public class BigBashStandingViewModel
     {
-        public BigBashStandingViewModel(int order, BigBashTeam team, BigBashStanding standing)
+        public BigBashStandingViewModel(int order, CricketTeam team, CricketStanding standing)
         {
             Order = order;
             Team = team;
@@ -12,7 +12,7 @@ namespace afl_dakboard.ViewModels
         }
 
         public int Order { get; }
-        public BigBashStanding Standing { get; }
-        public BigBashTeam Team { get; }
+        public CricketStanding Standing { get; }
+        public CricketTeam Team { get; }
     }
 }
