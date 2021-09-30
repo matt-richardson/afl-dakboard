@@ -11,7 +11,7 @@ namespace afl_dakboard.Repositories
         //  2021/2022 = season_id = 830
         //  Melbourne Stars = team_id = 51
 
-        private const int BigBash20212022SeasonId = 525;
+        private const int BigBash20212022SeasonId = 830;
         private const int BigBashMelbourneStarsTeamId = 51;
 
         private readonly CricketRepository _cricketRepository;
