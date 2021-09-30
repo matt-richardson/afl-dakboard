@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace afl_dakboard.Controllers
+namespace afl_dakboard.Repositories
 {
     public class CricketRepository
     {

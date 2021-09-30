@@ -8,7 +8,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace afl_dakboard.Controllers
+namespace afl_dakboard.Repositories
 {
     public class AflRepository
     {

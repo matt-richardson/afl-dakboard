@@ -1,5 +1,6 @@
 using System;
 using afl_dakboard.Controllers;
+using afl_dakboard.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;

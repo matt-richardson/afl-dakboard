@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using afl_dakboard.Models;
 
-namespace afl_dakboard.Controllers
+namespace afl_dakboard.Repositories
 {
     public class Twenty20Repository
     {
