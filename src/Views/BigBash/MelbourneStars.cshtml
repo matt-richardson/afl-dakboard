@@ -8,35 +8,44 @@
         <img src="/img/melbourne-stars-logo.png" height="128" width="128" style="padding-top: 15px" />
     </div>
     <div>
-        <table style="margin-top: 11px">
-            <thead>
-            <tr>
-                <th colspan="1">Last Game:</th>
-                <td colspan="3">@Model.LastGameDate</td>
-            </tr>
-            <tr>
-                <td colspan="4">@Model.Note</td>
-            </tr>
-            <tr>
-                <th></th>
-                <th>Wkts</th>
-                <th>Runs</th>
-                <th>Overs</th>
-            </tr>
-            </thead>
-            <tr>
-                <td>Melbourne Stars</td>
-                <td>@Model.OurTeamWickets</td>
-                <td>@Model.OurTeamScore</td>
-                <td>@Model.OurTeamOvers</td>
-            </tr>
-            <tr>
-                <td>@Model.Opposition</td>
-                <td>@Model.OppositionWickets</td>
-                <td>@Model.OppositionScore</td>
-                <td>@Model.OppositionOvers</td>
-            </tr>
-        </table>
+        @if (Model.LastGameDate == null)
+        {
+            <div style="padding-top: 15px">
+                @Model.Note
+            </div>
+        }
+        else
+        {
+            <table style="margin-top: 11px">
+                <thead>
+                <tr>
+                    <th colspan="1">Last Game:</th>
+                    <td colspan="3">@Model.LastGameDate</td>
+                </tr>
+                <tr>
+                    <td colspan="4">@Model.Note</td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>Wkts</th>
+                    <th>Runs</th>
+                    <th>Overs</th>
+                </tr>
+                </thead>
+                <tr>
+                    <td>Melbourne Stars</td>
+                    <td>@Model.OurTeamWickets</td>
+                    <td>@Model.OurTeamScore</td>
+                    <td>@Model.OurTeamOvers</td>
+                </tr>
+                <tr>
+                    <td>@Model.Opposition</td>
+                    <td>@Model.OppositionWickets</td>
+                    <td>@Model.OppositionScore</td>
+                    <td>@Model.OppositionOvers</td>
+                </tr>
+            </table>
+        }
     </div>
 </div>
 <br/>
@@ -46,7 +55,7 @@
 }
 else
 {
-    <strong>Next Game:</strong> <text>Round #@Model.NextGameRound against @Model.NextGameTeam</text>
+    <strong>Next Game:</strong> <text>@Model.NextGameRound against @Model.NextGameTeam</text>
     <br/>
     @if (@Model.NextGameDate == null)
     {

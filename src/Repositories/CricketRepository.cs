@@ -91,7 +91,7 @@ namespace afl_dakboard.Repositories
             var games = localGamesResponse.Games.Concat(awayGamesResponse.Games).ToList();
 
             _logger.LogInformation("Found {Count} games", games.Count);
-            lastGame = games.OrderByDescending(x => x.StartingAt).First(x => x.TossWonTeamId != null);
+            lastGame = games.OrderByDescending(x => x.StartingAt).FirstOrDefault(x => x.TossWonTeamId != null);
             nextGame = games.OrderBy(x => x.StartingAt).FirstOrDefault(x => !IsComplete(x));
 
             var expiration = GetGameCacheExpiration(lastGame, nextGame);
@@ -101,8 +101,9 @@ namespace afl_dakboard.Repositories
             return (lastGame, nextGame);
         }
 
-        private bool IsComplete(CricketGame cricketGame)
+        private bool IsComplete(CricketGame? cricketGame)
         {
+            if (cricketGame == null) return false;
             return cricketGame.Status switch
             {
                 "Finished" => true,
@@ -113,7 +114,7 @@ namespace afl_dakboard.Repositories
             };
         }
 
-        private DateTimeOffset GetGameCacheExpiration(CricketGame lastGame, CricketGame? nextGame)
+        private DateTimeOffset GetGameCacheExpiration(CricketGame? lastGame, CricketGame? nextGame)
         {
             //last game has finished
             if (IsComplete(lastGame))
