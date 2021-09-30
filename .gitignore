@@ -363,3 +363,4 @@ FodyWeavers.xsd
 
 # Rider folder
 .idea
+src/appsettings.Development.json

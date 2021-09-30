@@ -45,7 +45,7 @@ namespace afl_dakboard
                     .WriteTo.Console())
                 .ConfigureWebHostDefaults(builder =>
                 {
-                    builder.UseUrls("http://+:80");
+                    builder.UseUrls();
                     builder.UseStartup<Startup>();
                 });
         }
