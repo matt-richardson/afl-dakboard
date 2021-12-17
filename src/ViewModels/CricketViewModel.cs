@@ -44,7 +44,7 @@ namespace afl_dakboard.ViewModels
                     ? lastGame.VisitorTeam.Name
                     : lastGame.LocalTeam.Name;
 
-                LastGameDate = lastGame.StartingAt.Humanize(dateToCompareAgainst: timeInMelbourne.DateTime);
+                LastGameDate = TimeZoneInfo.ConvertTime(lastGame.StartingAt, timezone).Humanize(dateToCompareAgainst: timeInMelbourne.DateTime);
                 Note = lastGame.Note;
             }
             else
@@ -54,7 +54,7 @@ namespace afl_dakboard.ViewModels
 
             if (nextGame != null)
             {
-                var dateTime = nextGame.StartingAt;
+                var dateTime = TimeZoneInfo.ConvertTime(nextGame.StartingAt, timezone);
                 NextGameDate = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({dateTime.Humanize(dateToCompareAgainst: timeInMelbourne.DateTime)})";
                 NextGameVenue = nextGame.Venue.Name;
                 NextGameRound = nextGame.Round.ToLower();

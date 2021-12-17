@@ -38,7 +38,7 @@ namespace afl_dakboard.Repositories
             _logger.LogInformation("Getting teams from {Url}", url.Replace(_apiToken, "xxxxxxxxxx"));
             var httpClient = new HttpClient();
             var json = await httpClient.GetStringAsync(url);
-            teams = DeserializeObject<CricketTeamsRoot>(json).Teams;
+            teams = JsonConvert.DeserializeObject<CricketTeamsRoot>(json).Teams;
             _logger.LogInformation("Found {Count} teams", teams.Count);
             _memoryCache.Set(TeamsCacheKey, teams, DateTime.Now.AddDays(1));
             return teams;
@@ -54,15 +54,10 @@ namespace afl_dakboard.Repositories
             var url = $"https://cricket.sportmonks.com/api/v2.0/standings/season/{seasonId}?api_token={_apiToken}";
             _logger.LogInformation("Getting standings from {Url}", url.Replace(_apiToken, "xxxxxxxxxx"));
             var json = await httpClient.GetStringAsync(url);
-            standings = DeserializeObject<CricketStandingsRoot>(json).Standings;
+            standings = JsonConvert.DeserializeObject<CricketStandingsRoot>(json).Standings;
             _logger.LogInformation("Found {Count} standings", standings.Count);
             _memoryCache.Set(cacheKey, standings, DateTime.Now.AddHours(1));
             return standings;
-        }
-
-        private static T DeserializeObject<T>(string json)
-        {
-            return JsonConvert.DeserializeObject<T>(json, new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local});
         }
 
         public async Task<(CricketGame lastGame, CricketGame? nextGame)> GetLastAndNextGamesForTeam(int seasonId, int teamId)
@@ -80,7 +75,7 @@ namespace afl_dakboard.Repositories
             var localGamesUrl = $"https://cricket.sportmonks.com/api/v2.0/fixtures?filter[season_id]={seasonId}&include=runs,venue,localteam,visitorteam&filter[localteam_id]={teamId}&api_token={_apiToken}";
             _logger.LogInformation("Getting games from {Url}", localGamesUrl.Replace(_apiToken, "xxxxxxxxxx"));
             var localGamesJson = await httpClient.GetStringAsync(localGamesUrl);
-            var localGamesResponse = DeserializeObject<CricketGamesRoot>(localGamesJson);
+            var localGamesResponse = JsonConvert.DeserializeObject<CricketGamesRoot>(localGamesJson);
 
             if (localGamesResponse.Meta.Total > localGamesResponse.Meta.PerPage)
                 throw new ApplicationException("We got more games back than we currently handle. Need to deal with pagination.");
@@ -88,7 +83,7 @@ namespace afl_dakboard.Repositories
             var awayGamesUrl = $"https://cricket.sportmonks.com/api/v2.0/fixtures?filter[season_id]={seasonId}&include=runs,venue,localteam,visitorteam&filter[visitorteam_id]={teamId}&api_token={_apiToken}";
             _logger.LogInformation("Getting games for from {Url}", awayGamesUrl.Replace(_apiToken, "xxxxxxxxxx"));
             var awayGamesJson = await httpClient.GetStringAsync(awayGamesUrl);
-            var awayGamesResponse = DeserializeObject<CricketGamesRoot>(awayGamesJson);
+            var awayGamesResponse = JsonConvert.DeserializeObject<CricketGamesRoot>(awayGamesJson);
 
             if (awayGamesResponse.Meta.Total > awayGamesResponse.Meta.PerPage)
                 throw new ApplicationException("We got more games back than we currently handle. Need to deal with pagination.");
