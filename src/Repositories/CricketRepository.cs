@@ -109,6 +109,7 @@ namespace afl_dakboard.Repositories
                 "Finished" => true,
                 "Aban." => true,
                 "Cancl." => true,
+                "Postp." => false,
                 "NS" => false,
                 _ => throw new ApplicationException($"Unknown game status: {cricketGame.Status}")
             };
