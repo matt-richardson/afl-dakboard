@@ -28,7 +28,7 @@ namespace afl_dakboard.Repositories
         public async Task<IReadOnlyList<CricketStanding>> GetStandings()
             => await _cricketRepository.GetStandings(Season2021Id);
 
-        public async Task<(CricketGame lastGame, CricketGame? nextGame)> GetLastAndNextGamesForAustralia()
+        public async Task<(CricketGame? lastGame, CricketGame? nextGame)> GetLastAndNextGamesForAustralia()
             => await _cricketRepository.GetLastAndNextGamesForTeam(Season2021Id, AustralianTeamId);
     }
 }

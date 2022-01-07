@@ -60,7 +60,7 @@ namespace afl_dakboard.Repositories
             return standings;
         }
 
-        public async Task<(CricketGame lastGame, CricketGame? nextGame)> GetLastAndNextGamesForTeam(int seasonId, int teamId)
+        public async Task<(CricketGame? lastGame, CricketGame? nextGame)> GetLastAndNextGamesForTeam(int seasonId, int teamId)
         {
             var lastGameCacheKey = $"{LastGameCacheKey}_{seasonId}_{teamId}";
             var nextGameCacheKey = $"{NextGameCacheKey}_{seasonId}_{teamId}";
