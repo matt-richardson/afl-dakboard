@@ -92,7 +92,7 @@ namespace afl_dakboard.Repositories
 
             _logger.LogInformation("Found {Count} games", games.Count);
             lastGame = games.OrderByDescending(x => x.StartingAt).FirstOrDefault(x => x.TossWonTeamId != null);
-            nextGame = games.OrderBy(x => x.StartingAt).FirstOrDefault(x => !IsComplete(x));
+            nextGame = games.OrderBy(x => x.StartingAt).FirstOrDefault(x => x.TossWonTeamId == null);
 
             var expiration = GetGameCacheExpiration(lastGame, nextGame);
             _memoryCache.Set(lastGameCacheKey, lastGame, expiration);
@@ -101,34 +101,18 @@ namespace afl_dakboard.Repositories
             return (lastGame, nextGame);
         }
 
-        private bool IsComplete(CricketGame? cricketGame)
-        {
-            if (cricketGame == null) return false;
-            return cricketGame.Status switch
-            {
-                "Finished" => true,
-                "Aban." => true,
-                "Cancl." => true,
-                "Postp." => true,
-                "NS" => false,
-                _ => throw new ApplicationException($"Unknown game status: {cricketGame.Status}")
-            };
-        }
-
         private DateTimeOffset GetGameCacheExpiration(CricketGame? lastGame, CricketGame? nextGame)
         {
             //last game has finished
-            if (IsComplete(lastGame))
+            if (lastGame.IsComplete())
                 return DateTime.Now.AddDays(1);
 
             //no next game
             if (nextGame == null)
                 return DateTime.Now.AddDays(1);
 
-            //next game has started (not sure if this can happen, but hey
-            //not sure how to detect this?
-            // if (nextGame.Complete > 0)
-            //     return DateTime.Now.AddMinutes(10);
+            if (lastGame.IsInProgress())
+                return DateTime.Now.AddMinutes(10);
 
             //next game is soon (well, today)
             if (nextGame.StartingAt.ToString("d") == DateTime.Now.ToString("d"))

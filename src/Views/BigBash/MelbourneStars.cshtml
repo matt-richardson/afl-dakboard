@@ -20,7 +20,16 @@
                 <thead>
                 <tr>
                     <th colspan="1">Last Game:</th>
-                    <td colspan="3">@Model.LastGameDate</td>
+                    <td colspan="3">
+                        @if (Model.IsInProgress)
+                        {
+                            <text>In progress</text>
+                        }
+                        else
+                        {
+                            @Model.LastGameDate
+                        }
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="4">@Model.Note</td>

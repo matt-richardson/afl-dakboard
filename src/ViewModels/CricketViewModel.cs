@@ -19,6 +19,7 @@ namespace afl_dakboard.ViewModels
         public string? Opposition { get; }
         public string? LastGameDate { get; }
         public string Note { get; }
+        public bool IsInProgress { get; }
         public string? NextGameDate { get; }
         public string? NextGameVenue { get; }
         public string? NextGameRound { get; }
@@ -46,6 +47,7 @@ namespace afl_dakboard.ViewModels
 
                 LastGameDate = TimeZoneInfo.ConvertTime(lastGame.StartingAt, timezone).Humanize(dateToCompareAgainst: timeInMelbourne.DateTime);
                 Note = lastGame.Note;
+                IsInProgress = lastGame.IsInProgress();
             }
             else
             {

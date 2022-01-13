@@ -361,6 +361,43 @@ namespace afl_dakboard.Models
         public Venue Venue { get; }
     }
 
+    public static class CricketGameExtensions
+    {
+        public static bool IsComplete(this CricketGame? cricketGame)
+        {
+            if (cricketGame == null) return false;
+            return cricketGame.Status switch
+            {
+                "Finished" => true,
+                "Aban." => true,
+                "Cancl." => true,
+                "Postp." => true,
+                "NS" => false,
+                "1st Innings" => false,
+                "2nd Innings" => false,
+                "Innings Break" => false,
+                _ => throw new ApplicationException($"Unknown game status: {cricketGame.Status}")
+            };
+        }
+        
+        public static bool IsInProgress(this CricketGame? cricketGame)
+        {
+            if (cricketGame == null) return false;
+            return cricketGame.Status switch
+            {
+                "Finished" => false,
+                "Aban." => false,
+                "Cancl." => false,
+                "Postp." => false,
+                "NS" => false,
+                "1st Innings" => true,
+                "2nd Innings" => true,
+                "Innings Break" => true,
+                _ => throw new ApplicationException($"Unknown game status: {cricketGame.Status}")
+            };
+        }
+    }
+    
     public class Links
     {
         [JsonConstructor]
