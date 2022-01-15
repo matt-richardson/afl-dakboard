@@ -103,8 +103,9 @@ namespace afl_dakboard.Repositories
             var games = localGamesResponse.Games.Concat(awayGamesResponse.Games).ToList();
 
             _logger.LogInformation("Found {Count} games", games.Count);
-            lastGame = games.OrderByDescending(x => x.StartingAt).FirstOrDefault(x => x.TossWonTeamId != null);
-            nextGame = games.OrderBy(x => x.StartingAt).FirstOrDefault(x => x.TossWonTeamId == null);
+            var orderedGames = games.OrderBy(x => x.StartingAt).ToArray();
+            lastGame = orderedGames.LastOrDefault(x => x.TossWonTeamId != null);
+            nextGame = orderedGames.FirstOrDefault(x => x.TossWonTeamId == null);
 
             var expiration = GetGameCacheExpiration(lastGame, nextGame);
             _logger.LogInformation("Caching data until {Expiration}", expiration);
