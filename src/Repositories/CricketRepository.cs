@@ -32,7 +32,11 @@ namespace afl_dakboard.Repositories
         public async Task<IReadOnlyList<CricketTeam>> GetTeams()
         {
             if (_memoryCache.TryGetValue<IReadOnlyList<CricketTeam>>(TeamsCacheKey, out var teams))
+            {
+                _logger.LogInformation("Cache hit - returning teams from cache");
                 return teams;
+            }
+            _logger.LogInformation("Cache miss - querying teams from upstream");
 
             var url = $"https://cricket.sportmonks.com/api/v2.0/teams?api_token={_apiToken}";
             _logger.LogInformation("Getting teams from {Url}", url.Replace(_apiToken, "xxxxxxxxxx"));
@@ -48,7 +52,11 @@ namespace afl_dakboard.Repositories
         {
             var cacheKey = $"{StandingsCacheKey}_{seasonId}";
             if (_memoryCache.TryGetValue<IReadOnlyList<CricketStanding>>(cacheKey, out var standings))
+            {
+                _logger.LogInformation("Cache hit - returning standings from cache");
                 return standings;
+            }
+            _logger.LogInformation("Cache miss - querying standings from upstream");
 
             var httpClient = new HttpClient();
             var url = $"https://cricket.sportmonks.com/api/v2.0/standings/season/{seasonId}?api_token={_apiToken}";
@@ -66,9 +74,13 @@ namespace afl_dakboard.Repositories
             var nextGameCacheKey = $"{NextGameCacheKey}_{seasonId}_{teamId}";
             if (_memoryCache.TryGetValue<CricketGame>(lastGameCacheKey, out var lastGame) &&
                 _memoryCache.TryGetValue<CricketGame>(nextGameCacheKey, out var nextGame))
+            {
+                _logger.LogInformation("Cache hit - returning last and next game from cache");
                 return (lastGame, nextGame);
+            }
 
             //todo: deal with pagination (maybe?)
+            _logger.LogInformation("Cache miss - querying games from upstream");
 
             var httpClient = new HttpClient();
 
@@ -95,6 +107,7 @@ namespace afl_dakboard.Repositories
             nextGame = games.OrderBy(x => x.StartingAt).FirstOrDefault(x => x.TossWonTeamId == null);
 
             var expiration = GetGameCacheExpiration(lastGame, nextGame);
+            _logger.LogInformation("Caching data until {Expiration}", expiration);
             _memoryCache.Set(lastGameCacheKey, lastGame, expiration);
             _memoryCache.Set(nextGameCacheKey, nextGame, expiration);
 
