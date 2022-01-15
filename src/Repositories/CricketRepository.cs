@@ -119,7 +119,11 @@ namespace afl_dakboard.Repositories
         {
             //last game has finished
             if (lastGame.IsComplete())
+            {
+                if (nextGame != null && nextGame.StartingAt < DateTime.Now.AddDays(1))
+                    return nextGame.StartingAt;
                 return DateTime.Now.AddDays(1);
+            }
 
             //no next game
             if (nextGame == null)
