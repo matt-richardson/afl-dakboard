@@ -125,13 +125,13 @@ namespace afl_dakboard.Repositories
                 return DateTime.Now.AddDays(1);
             }
 
-            //no next game
-            if (nextGame == null)
-                return DateTime.Now.AddDays(1);
-
             if (lastGame.IsInProgress())
                 return DateTime.Now.AddMinutes(10);
 
+            //no next game
+            if (nextGame == null)
+                return DateTime.Now.AddDays(1);
+            
             //next game is soon (well, today)
             if (nextGame.StartingAt.ToString("d") == DateTime.Now.ToString("d"))
                 return DateTime.Now.AddMinutes(30);
