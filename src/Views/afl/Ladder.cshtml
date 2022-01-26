@@ -18,7 +18,7 @@
     </thead>
     @{
         var placing = 0;
-        var topTeams = Model.Standings.Take(8).ToArray();
+        var topTeams = Model!.Standings.Take(8).ToArray();
     }
     @foreach (var standing in topTeams)
     {
