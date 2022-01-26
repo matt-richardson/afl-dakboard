@@ -36,7 +36,7 @@ namespace afl_dakboard.Controllers
             _logger.LogInformation("Last game is {Game}", JsonConvert.SerializeObject(lastGame));
             _logger.LogInformation("Next game is {Game}", JsonConvert.SerializeObject(nextGame));
 
-            return View(new CricketViewModel(lastGame, nextGame, _logger, _repository.TeamId));
+            return View(new CricketViewModel(lastGame, nextGame, _logger, _repository.TeamId, "Australia"));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

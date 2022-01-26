@@ -378,6 +378,11 @@ namespace afl_dakboard.Models
                 "Innings Break" => false,
                 _ => throw new ApplicationException($"Unknown game status: {cricketGame.Status}")
             };
+        }        
+        
+        public static bool IsTeam(this CricketGame cricketGame, int teamId)
+        {
+            return cricketGame.LocalTeamId == teamId || cricketGame.VisitorTeamId == teamId;
         }
         
         public static bool IsInProgress(this CricketGame? cricketGame)

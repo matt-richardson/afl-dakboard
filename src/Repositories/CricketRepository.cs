@@ -84,29 +84,27 @@ namespace afl_dakboard.Repositories
 
             var httpClient = new HttpClient();
 
-            var localGamesUrl = $"https://cricket.sportmonks.com/api/v2.0/fixtures?filter[season_id]={seasonId}&include=runs,venue,localteam,visitorteam&filter[localteam_id]={teamId}&api_token={_apiToken}";
-            _logger.LogInformation("Getting games from {Url}", localGamesUrl.Replace(_apiToken, "xxxxxxxxxx"));
-            var localGamesJson = await httpClient.GetStringAsync(localGamesUrl);
-            var localGamesResponse = JsonConvert.DeserializeObject<CricketGamesRoot>(localGamesJson);
+            var gamesUrl = $"https://cricket.sportmonks.com/api/v2.0/fixtures?filter[season_id]={seasonId}&include=runs,venue,localteam,visitorteam&api_token={_apiToken}";
+            _logger.LogInformation("Getting games from {Url}", gamesUrl.Replace(_apiToken, "xxxxxxxxxx"));
+            var gamesJson = await httpClient.GetStringAsync(gamesUrl);
+            var gamesResponse = JsonConvert.DeserializeObject<CricketGamesRoot>(gamesJson);
 
-            if (localGamesResponse.Meta.Total > localGamesResponse.Meta.PerPage)
+            if (gamesResponse.Meta.Total > gamesResponse.Meta.PerPage)
                 throw new ApplicationException("We got more games back than we currently handle. Need to deal with pagination.");
 
-            var awayGamesUrl = $"https://cricket.sportmonks.com/api/v2.0/fixtures?filter[season_id]={seasonId}&include=runs,venue,localteam,visitorteam&filter[visitorteam_id]={teamId}&api_token={_apiToken}";
-            _logger.LogInformation("Getting games for from {Url}", awayGamesUrl.Replace(_apiToken, "xxxxxxxxxx"));
-            var awayGamesJson = await httpClient.GetStringAsync(awayGamesUrl);
-            var awayGamesResponse = JsonConvert.DeserializeObject<CricketGamesRoot>(awayGamesJson);
-
-            if (awayGamesResponse.Meta.Total > awayGamesResponse.Meta.PerPage)
-                throw new ApplicationException("We got more games back than we currently handle. Need to deal with pagination.");
-
-            var games = localGamesResponse.Games.Concat(awayGamesResponse.Games).ToList();
+            var games = gamesResponse.Games;
 
             _logger.LogInformation("Found {Count} games", games.Count);
             var orderedGames = games.OrderBy(x => x.StartingAt).ToArray();
-            lastGame = orderedGames.LastOrDefault(x => x.TossWonTeamId != null);
-            nextGame = orderedGames.FirstOrDefault(x => x.TossWonTeamId == null);
+            lastGame = orderedGames.Where(x => x.IsTeam(teamId)).LastOrDefault(x => x.TossWonTeamId != null);
+            nextGame = orderedGames.Where(x => x.IsTeam(teamId)).FirstOrDefault(x => x.TossWonTeamId == null);
 
+            if (nextGame == null && lastGame.IsComplete())
+            {
+                lastGame = orderedGames.LastOrDefault(x => x.TossWonTeamId != null);
+                nextGame = orderedGames.FirstOrDefault(x => x.TossWonTeamId == null);
+            }
+            
             var expiration = GetGameCacheExpiration(lastGame, nextGame);
             _logger.LogInformation("Caching data until {Expiration}", expiration);
             _memoryCache.Set(lastGameCacheKey, lastGame, expiration);
