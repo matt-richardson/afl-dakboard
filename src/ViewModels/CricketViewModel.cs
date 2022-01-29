@@ -10,15 +10,15 @@ namespace afl_dakboard.ViewModels
 {
     public class CricketViewModel
     {
-        public int? OurTeamWickets { get; }
-        public double? OurTeamOvers { get; }
-        public int? OurTeamScore { get; }
+        //usually our team, but if we're not in the finals, it changes
+        public string? HomeTeam { get; }
+        public int? HomeTeamWickets { get; }
+        public double? HomeTeamOvers { get; }
+        public int? HomeTeamScore { get; }
         public int? OppositionWickets { get; }
         public double? OppositionOvers { get; }
         public int? OppositionScore { get; }
         public string? Opposition { get; }
-        //usually our team, but if we're not in the finals, it changes
-        public string? OurTeam { get; }
         public string? LastGameDate { get; }
         public string? LastGameRound { get; }
         public string Note { get; }
@@ -34,31 +34,19 @@ namespace afl_dakboard.ViewModels
             var timeInMelbourne = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timezone);
             if (lastGame != null)
             {
-                var ourTeamRuns = lastGame.Runs.FirstOrDefault(x => x.TeamId == ourTeamId);
-                (OurTeamScore, OurTeamWickets, OurTeamOvers) = ourTeamRuns != null
-                    ? (ourTeamRuns.Score, ourTeamRuns.Wickets, ourTeamRuns.Overs)
+                var (homeTeam, oppositionTeam) = GetTeams(lastGame, ourTeamId);
+                HomeTeam = homeTeam.Name;
+                Opposition = oppositionTeam.Name;
+                
+                var homeTeamRuns = lastGame.Runs.FirstOrDefault(x => x.TeamId == homeTeam.Id);
+                (HomeTeamScore, HomeTeamWickets, HomeTeamOvers) = homeTeamRuns != null
+                    ? (homeTeamRuns.Score, homeTeamRuns.Wickets, homeTeamRuns.Overs)
                     : (0, 0, 0);
 
-                var oppositionRuns = lastGame.Runs.FirstOrDefault(x => x.TeamId != ourTeamId);
+                var oppositionRuns = lastGame.Runs.FirstOrDefault(x => x.TeamId == oppositionTeam.Id);
                 (OppositionScore, OppositionWickets, OppositionOvers) = oppositionRuns != null
                     ? (oppositionRuns.Score, oppositionRuns.Wickets, oppositionRuns.Overs)
                     : (0, 0, 0);
-
-                Opposition = lastGame.LocalTeamId == ourTeamId
-                    ? lastGame.VisitorTeam.Name
-                    : lastGame.LocalTeam.Name;
-                
-                //this is ick. if we have been knocked out of the competition, then we may be showing other teams playing
-                if (lastGame.IsTeam(ourTeamId))
-                {
-                    OurTeam = ourTeamName;
-                }
-                else
-                {
-                    OurTeam = lastGame.LocalTeamId == ourTeamId
-                        ? lastGame.LocalTeam.Name
-                        : lastGame.VisitorTeam.Name;
-                }
 
                 LastGameDate = TimeZoneInfo.ConvertTime(lastGame.StartingAt, timezone).Humanize(dateToCompareAgainst: timeInMelbourne.DateTime);
                 Note = lastGame.Note;
@@ -80,6 +68,19 @@ namespace afl_dakboard.ViewModels
             }
 
             logger.LogInformation("Rendering {Name} with {Json}", nameof(CricketViewModel), JsonConvert.SerializeObject(this));
+        }
+
+        private static (Team LocalTeam, Team VisitorTeam) GetTeams(CricketGame lastGame, int ourTeamId)
+        {
+            //if we have been knocked out of the competition, then we show other teams playing
+            if (lastGame.IsTeam(ourTeamId))
+            {
+                return lastGame.LocalTeamId == ourTeamId
+                    ? (lastGame.LocalTeam, lastGame.VisitorTeam)
+                    : (lastGame.VisitorTeam, lastGame.LocalTeam);
+            }
+
+            return (lastGame.LocalTeam, lastGame.VisitorTeam);
         }
     }
 }

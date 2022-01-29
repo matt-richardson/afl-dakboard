@@ -5,7 +5,7 @@
 
 <div style="display: flex;">
     <div>
-        @if (@Model.OurTeam == "Melbourne Stars")
+        @if (@Model.HomeTeam == "Melbourne Stars")
         {
             <img src="/img/melbourne-stars-logo.png" height="128" width="128" style="padding-top: 15px"/>
         }
@@ -52,10 +52,10 @@
                 </tr>
                 </thead>
                 <tr>
-                    <td>@Model.OurTeam</td>
-                    <td>@Model.OurTeamWickets</td>
-                    <td>@Model.OurTeamScore</td>
-                    <td>@Model.OurTeamOvers</td>
+                    <td>@Model.HomeTeam</td>
+                    <td>@Model.HomeTeamWickets</td>
+                    <td>@Model.HomeTeamScore</td>
+                    <td>@Model.HomeTeamOvers</td>
                 </tr>
                 <tr>
                     <td>@Model.Opposition</td>
@@ -74,7 +74,7 @@
 }
 else
 {
-    <strong>Next Game:</strong> <text>@Model.OurTeam vs @Model.NextGameTeam</text>
+    <strong>Next Game:</strong> <text>@Model.HomeTeam vs @Model.NextGameTeam</text>
     <br/>
     @if (@Model.NextGameDate == null)
     {
