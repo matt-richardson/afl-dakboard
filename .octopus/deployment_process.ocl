@@ -22,7 +22,7 @@ step "Start new container" {
         action_type = "Octopus.DockerRun"
         properties = {
             Octopus.Action.Docker.Args = "--name afl-dakboard"
-            Octopus.Action.Docker.EnvVariable = "{\"VIRTUAL_HOST\":\"afl.sybix9.com\",\"LETSENCRYPT_HOST\":\"afl.sybix9.com\",\"Serilog__WriteTo__0__Args__serverUrl\":\"#{Seq.ServerUrl}\",\"Serilog__WriteTo__0__Args__ApiKey\":\"#{Seq.Afl.Dakboard.ApiKey}\",\"LOGSPOUT\":\"ignore\",\"SportMonks__ApiToken\":\"#{SportMonks.ApiToken}\"}"
+            Octopus.Action.Docker.EnvVariable = "{\"VIRTUAL_HOST\":\"#{DomainName}\",\"LETSENCRYPT_HOST\":\"#{DomainName}\",\"Serilog__WriteTo__0__Args__serverUrl\":\"#{Seq.ServerUrl}\",\"Serilog__WriteTo__0__Args__ApiKey\":\"#{Seq.Afl.Dakboard.ApiKey}\",\"LOGSPOUT\":\"ignore\",\"SportMonks__ApiToken\":\"#{SportMonks.ApiToken}\"}"
             Octopus.Action.Docker.PortAutoMap = "False"
             Octopus.Action.Docker.PortMapping = "{}"
             Octopus.Action.Docker.RestartPolicy = "always"
