@@ -36,6 +36,8 @@ namespace afl_dakboard.Repositories
             var json = await httpClient.GetStringAsync(url);
             teams = JsonConvert.DeserializeObject<AflTeamsRoot>(json).Teams;
             _logger.LogInformation("Found {Count} teams", teams.Count);
+            var expiration = DateTime.Now.AddDays(1);
+            _logger.LogInformation("Caching data until {Expiration}", expiration);
             _memoryCache.Set(TeamsCacheKey, teams, DateTime.Now.AddDays(1));
             return teams;
         }
@@ -51,11 +53,13 @@ namespace afl_dakboard.Repositories
             var json = await httpClient.GetStringAsync(url);
             standings = JsonConvert.DeserializeObject<AflStandingsRoot>(json).Standings;
             _logger.LogInformation("Found {Count} games", standings.Count);
-            _memoryCache.Set(StandingsCacheKey, standings, DateTime.Now.AddHours(1));
+            var expiration = DateTime.Now.AddHours(1);
+            _logger.LogInformation("Caching data until {Expiration}", expiration);
+            _memoryCache.Set(StandingsCacheKey, standings, expiration);
             return standings;
         }
 
-        public async Task<(AflGame lastGame, AflGame? nextGame)> GetLastAndNextGamesForRichmond()
+        public async Task<(AflGame? lastGame, AflGame? nextGame)> GetLastAndNextGamesForRichmond()
         {
             if (_memoryCache.TryGetValue<AflGame>(LastGameCacheKey, out var lastGame) &&
                 _memoryCache.TryGetValue<AflGame>(NextGameCacheKey, out var nextGame))
@@ -68,35 +72,36 @@ namespace afl_dakboard.Repositories
             var response = JsonConvert.DeserializeObject<AflGamesRoot>(json);
             var games = response.Games.Where(x => x.AwayTeam == "Richmond" || x.HomeTeam == "Richmond").ToList();
             _logger.LogInformation("Found {Count} games", games.Count);
-            lastGame = games.OrderByDescending(x => x.Round).First(x => x.Complete > 0);
+            lastGame = games.OrderByDescending(x => x.Round).FirstOrDefault(x => x.Complete > 0);
             nextGame = games.OrderBy(x => x.Round).FirstOrDefault(x => x.Complete < 100);
 
             var expiration = GetGameCacheExpiration(lastGame, nextGame);
+            _logger.LogInformation("Caching data until {Expiration}", expiration);
             _memoryCache.Set(LastGameCacheKey, lastGame, expiration);
             _memoryCache.Set(NextGameCacheKey, nextGame, expiration);
 
             return (lastGame, nextGame);
         }
 
-        private DateTimeOffset GetGameCacheExpiration(AflGame lastGame, AflGame? nextGame)
+        private DateTimeOffset GetGameCacheExpiration(AflGame? lastGame, AflGame? nextGame)
         {
             //last game is still in progress
-            if (lastGame.Complete < 100)
+            if (lastGame is {Complete: < 100})
                 return DateTime.Now.AddMinutes(10);
 
             //no next game
             if (nextGame == null)
                 return DateTime.Now.AddDays(1);
 
-            //next game has started (not sure if this can happen, but hey
+            //next game has started (not sure if this can happen, but hey)
             if (nextGame.Complete > 0)
                 return DateTime.Now.AddMinutes(10);
 
-            //next game is soon (well, today)
-            if (DateTime.Parse(nextGame.Date).ToString("d") == DateTime.Now.ToString("d"))
-                return DateTime.Now.AddMinutes(10);
-
-            return DateTime.Now.AddHours(6);
+            //next game is soon
+            var timeTillGame = DateTime.Parse(nextGame.Date).Subtract(DateTime.Now);
+            //constrain to min 10 min cache, max 6 hour cache
+            var timeTillGameTicks = Math.Clamp(timeTillGame.Ticks, TimeSpan.FromMinutes(10).Ticks, TimeSpan.FromHours(6).Ticks);
+            return DateTime.Now.AddTicks(timeTillGameTicks);
         }
     }
 }

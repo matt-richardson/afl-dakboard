@@ -8,32 +8,41 @@
         <img src="/img/richmond-tigers-logo.png" height="128" width="128"/>
     </div>
     <div>
-        <table style="margin-top: 11px">
-            <thead>
-            <tr>
-                <th colspan="1">Last Game:</th>
-                <th colspan="3">@Model!.LastGameDate</th>
-            </tr>
-            <tr>
-                <th>Team</th>
-                <th>G</th>
-                <th>B</th>
-                <th>Pts</th>
-            </tr>
-            </thead>
-            <tr>
-                <td>Richmond</td>
-                <td>@Model.RichmondGoals</td>
-                <td>@Model.RichmondBehinds</td>
-                <td>@Model.RichmondScore</td>
-            </tr>
-            <tr>
-                <td>@Model.Opposition</td>
-                <td>@Model.OppositionGoals</td>
-                <td>@Model.OppositionBehinds</td>
-                <td>@Model.OppositionScore</td>
-            </tr>
-        </table>
+        @if (Model!.LastGameDate == null)
+        {
+            <div style="padding-top: 15px">
+                @Model.Note
+            </div>
+        }
+        else
+        {
+            <table style="margin-top: 11px">
+                <thead>
+                <tr>
+                    <th colspan="1">Last Game:</th>
+                    <th colspan="3">@Model!.LastGameDate</th>
+                </tr>
+                <tr>
+                    <th>Team</th>
+                    <th>G</th>
+                    <th>B</th>
+                    <th>Pts</th>
+                </tr>
+                </thead>
+                <tr>
+                    <td>Richmond</td>
+                    <td>@Model.RichmondGoals</td>
+                    <td>@Model.RichmondBehinds</td>
+                    <td>@Model.RichmondScore</td>
+                </tr>
+                <tr>
+                    <td>@Model.Opposition</td>
+                    <td>@Model.OppositionGoals</td>
+                    <td>@Model.OppositionBehinds</td>
+                    <td>@Model.OppositionScore</td>
+                </tr>
+            </table>
+        }
     </div>
 </div>
 <br/>

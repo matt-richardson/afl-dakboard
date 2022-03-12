@@ -15,29 +15,37 @@ namespace afl_dakboard.ViewModels
         public int? OppositionGoals { get; }
         public int? OppositionBehinds { get; }
         public int? OppositionScore { get; }
-        public string Opposition { get; }
-        public string LastGameDate { get; }
+        public string? Opposition { get; }
+        public string? LastGameDate { get; }
         public string? NextGameDate { get; }
         public string? NextGameVenue { get; }
         public int NextGameRound { get; }
         public string? NextGameTeam { get; }
+        public string? Note { get; }
 
-        public RichmondViewModel(AflGame lastGame, AflGame? nextGame, ILogger logger)
+        public RichmondViewModel(AflGame? lastGame, AflGame? nextGame, ILogger logger)
         {
-            if (lastGame.HomeTeam == "Richmond")
+            var timezone = TZConvert.GetTimeZoneInfo("AUS Eastern Standard Time");
+            var timeInMelbourne = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timezone);
+            if (lastGame != null)
             {
-                (RichmondGoals, RichmondBehinds, RichmondScore) = (lastGame.HomeGoals, lastGame.HomeBehinds, lastGame.HomeScore);
-                (OppositionGoals, OppositionBehinds, OppositionScore, Opposition) = (lastGame.AwayGoals, lastGame.AwayBehinds, lastGame.AwayScore, lastGame.AwayTeam);
+                if (lastGame.HomeTeam == "Richmond")
+                {
+                    (RichmondGoals, RichmondBehinds, RichmondScore) = (lastGame.HomeGoals, lastGame.HomeBehinds, lastGame.HomeScore);
+                    (OppositionGoals, OppositionBehinds, OppositionScore, Opposition) = (lastGame.AwayGoals, lastGame.AwayBehinds, lastGame.AwayScore, lastGame.AwayTeam);
+                }
+                else
+                {
+                    (RichmondGoals, RichmondBehinds, RichmondScore) = (lastGame.AwayGoals, lastGame.AwayBehinds, lastGame.AwayScore);
+                    (OppositionGoals, OppositionBehinds, OppositionScore, Opposition) = (lastGame.HomeGoals, lastGame.HomeBehinds, lastGame.HomeScore, lastGame.HomeTeam);
+                }
+
+                LastGameDate = DateTime.Parse(lastGame.Date).Humanize(dateToCompareAgainst: timeInMelbourne.DateTime);
             }
             else
             {
-                (RichmondGoals, RichmondBehinds, RichmondScore) = (lastGame.AwayGoals, lastGame.AwayBehinds, lastGame.AwayScore);
-                (OppositionGoals, OppositionBehinds, OppositionScore, Opposition) = (lastGame.HomeGoals, lastGame.HomeBehinds, lastGame.HomeScore, lastGame.HomeTeam);
+                Note = "Season hasn't started yet";
             }
-
-            var timezone = TZConvert.GetTimeZoneInfo("AUS Eastern Standard Time");
-            var timeInMelbourne = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timezone);
-            LastGameDate = DateTime.Parse(lastGame.Date).Humanize(dateToCompareAgainst: timeInMelbourne.DateTime);
 
             if (nextGame != null)
             {
