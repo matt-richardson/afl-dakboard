@@ -16,6 +16,7 @@ namespace afl_dakboard.Repositories
         private readonly string _apiToken;
 
         private const string TeamsCacheKey = "teams";
+        private const string SeasonsCacheKey = "seasons";
         private const string StandingsCacheKey = "standings";
         private const string LastGameCacheKey = "lastgame";
         private const string NextGameCacheKey = "nextgame";
@@ -47,8 +48,28 @@ namespace afl_dakboard.Repositories
             _memoryCache.Set(TeamsCacheKey, teams, DateTime.Now.AddDays(1));
             return teams;
         }
+        
+        public async Task<IReadOnlyList<CricketSeason>> GetSeasons(int? leagueId)
+        {
+            var seasonsCacheKey = SeasonsCacheKey + "_" + leagueId;
+            if (_memoryCache.TryGetValue<IReadOnlyList<CricketSeason>>(seasonsCacheKey, out var seasons))
+            {
+                _logger.LogInformation("Cache hit - returning seasons from cache");
+                return seasons!;
+            }
+            _logger.LogInformation("Cache miss - querying seasons from upstream");
 
-        public async Task<IReadOnlyList<CricketStanding>> GetStandings(int seasonId)
+            var url = $"https://cricket.sportmonks.com/api/v2.0/seasons?api_token={_apiToken}&filter[league_id]={leagueId}";
+            _logger.LogInformation("Getting seasons from {Url}", url.Replace(_apiToken, "xxxxxxxxxx"));
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetStringAsync(url);
+            seasons = JsonConvert.DeserializeObject<CricketSeasonRoot>(json).Seasons;
+            _logger.LogInformation("Found {Count} seasons", seasons.Count);
+            _memoryCache.Set(seasonsCacheKey, seasons, DateTime.Now.AddDays(1));
+            return seasons;
+        }
+
+        public async Task<IReadOnlyList<CricketStanding>> GetStandings(int? seasonId)
         {
             var cacheKey = $"{StandingsCacheKey}_{seasonId}";
             if (_memoryCache.TryGetValue<IReadOnlyList<CricketStanding>>(cacheKey, out var standings))
@@ -68,7 +89,7 @@ namespace afl_dakboard.Repositories
             return standings;
         }
 
-        public async Task<(CricketGame? lastGame, CricketGame? nextGame)> GetLastAndNextGamesForTeam(int seasonId, int teamId)
+        public async Task<(CricketGame? lastGame, CricketGame? nextGame)> GetLastAndNextGamesForTeam(int? seasonId, int teamId)
         {
             var lastGameCacheKey = $"{LastGameCacheKey}_{seasonId}_{teamId}";
             var nextGameCacheKey = $"{NextGameCacheKey}_{seasonId}_{teamId}";
