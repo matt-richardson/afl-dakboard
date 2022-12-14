@@ -9,9 +9,10 @@ namespace afl_dakboard.Repositories
         //Big Bash League == league_id = 5
         //  2020/2021 = season_id = 525
         //  2021/2022 = season_id = 830
+        //  2022/2023 = season_id = 1079        //todo: look this up automatically
         //  Melbourne Stars = team_id = 51
 
-        private const int BigBash20212022SeasonId = 830;
+        private const int BigBash20212022SeasonId = 1079;
         private const int BigBashMelbourneStarsTeamId = 51;
 
         private readonly CricketRepository _cricketRepository;
