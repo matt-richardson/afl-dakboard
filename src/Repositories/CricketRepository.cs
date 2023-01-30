@@ -140,8 +140,8 @@ namespace afl_dakboard.Repositories
             if (lastGame.IsComplete())
             {
                 if (nextGame != null && nextGame.StartingAt < DateTime.Now.AddDays(1))
-                    return nextGame.StartingAt;
-                return DateTime.Now.AddDays(1);
+                    return nextGame.StartingAt.AddHours(-1);
+                return DateTime.Now.AddHours(6);
             }
 
             if (lastGame.IsInProgress())
@@ -149,13 +149,13 @@ namespace afl_dakboard.Repositories
 
             //no next game
             if (nextGame == null)
-                return DateTime.Now.AddDays(1);
+                return DateTime.Now.AddHours(6);
             
             //next game is soon (well, today)
             if (nextGame.StartingAt.ToString("d") == DateTime.Now.ToString("d"))
                 return DateTime.Now.AddMinutes(30);
 
-            return DateTime.Now.AddHours(12);
+            return DateTime.Now.AddHours(6);
         }
     }
 }
