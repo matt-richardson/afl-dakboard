@@ -410,7 +410,7 @@ namespace afl_dakboard.Models
             [JsonProperty("first")] string first,
             [JsonProperty("last")] string last,
             [JsonProperty("prev")] string prev,
-            [JsonProperty("next")] object next,
+            [JsonProperty("next")] string next,
             [JsonProperty("url")] string url,
             [JsonProperty("label")] string label,
             [JsonProperty("active")] bool active
@@ -435,7 +435,7 @@ namespace afl_dakboard.Models
         public string Prev { get; }
 
         [JsonProperty("next")]
-        public object Next { get; }
+        public string Next { get; }
 
         [JsonProperty("url")]
         public string Url { get; }

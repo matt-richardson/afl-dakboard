@@ -105,15 +105,20 @@ namespace afl_dakboard.Repositories
 
             var httpClient = new HttpClient();
 
-            var gamesUrl = $"https://cricket.sportmonks.com/api/v2.0/fixtures?filter[season_id]={seasonId}&include=runs,venue,localteam,visitorteam&api_token={_apiToken}";
-            _logger.LogInformation("Getting games from {Url}", gamesUrl.Replace(_apiToken, "xxxxxxxxxx"));
-            var gamesJson = await httpClient.GetStringAsync(gamesUrl);
-            var gamesResponse = JsonConvert.DeserializeObject<CricketGamesRoot>(gamesJson);
+            var filter = $"filter[season_id]={seasonId}&include=runs,venue,localteam,visitorteam&api_token={_apiToken}";
+            var gamesUrl = $"https://cricket.sportmonks.com/api/v2.0/fixtures?page=1&{filter}";
 
-            if (gamesResponse.Meta.Total > gamesResponse.Meta.PerPage)
-                throw new ApplicationException("We got more games back than we currently handle. Need to deal with pagination.");
-
-            var games = gamesResponse.Games;
+            var games = new List<CricketGame>();
+            var totalGames = 0;
+            do
+            {
+                _logger.LogInformation("Getting games from {Url}", gamesUrl.Replace(_apiToken, "xxxxxxxxxx"));
+                var gamesJson = await httpClient.GetStringAsync(gamesUrl);
+                var gamesResponse = JsonConvert.DeserializeObject<CricketGamesRoot>(gamesJson);
+                games.AddRange(gamesResponse.Games);
+                gamesUrl = gamesResponse.Links.Next + $"&{filter}";
+                totalGames = gamesResponse.Meta.Total;
+            } while (totalGames > games.Count);
 
             _logger.LogInformation("Found {Count} games", games.Count);
             var orderedGames = games.OrderBy(x => x.StartingAt).ToArray();
