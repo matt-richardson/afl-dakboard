@@ -195,7 +195,7 @@ namespace afl_dakboard.Models
             [JsonProperty("status")] string status,
             [JsonProperty("last_period")] object lastPeriod,
             [JsonProperty("note")] string note,
-            [JsonProperty("venue_id")] int venueId,
+            [JsonProperty("venue_id")] int? venueId,
             [JsonProperty("toss_won_team_id")] int? tossWonTeamId,
             [JsonProperty("winner_team_id")] int? winnerTeamId,
             [JsonProperty("draw_noresult")] object drawNoResult,
@@ -298,7 +298,7 @@ namespace afl_dakboard.Models
         public string Note { get; }
 
         [JsonProperty("venue_id")]
-        public int VenueId { get; }
+        public int? VenueId { get; }
 
         [JsonProperty("toss_won_team_id")]
         public int? TossWonTeamId { get; }
