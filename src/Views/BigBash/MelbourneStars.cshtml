@@ -80,9 +80,13 @@ else
     {
         <text>unknown</text>
     }
+    else if (@Model.NextGameVenue == null)
+    {
+        @Model.NextGameDate
+    }
     else
     {
         @Model.NextGameDate<text> at </text>
         @Model.NextGameVenue
-}
+    }
 }

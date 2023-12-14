@@ -62,7 +62,7 @@ namespace afl_dakboard.ViewModels
             {
                 var dateTime = TimeZoneInfo.ConvertTime(nextGame.StartingAt, timezone);
                 NextGameDate = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({dateTime.Humanize(dateToCompareAgainst: timeInMelbourne.DateTime)})";
-                NextGameVenue = nextGame.Venue.Name;
+                NextGameVenue = nextGame.Venue?.Name;
                 NextGameRound = nextGame.Round.ToLower();
                 NextGameTeam = nextGame.LocalTeamId == ourTeamId ? nextGame.VisitorTeam.Name : nextGame.LocalTeam.Name;
             }
