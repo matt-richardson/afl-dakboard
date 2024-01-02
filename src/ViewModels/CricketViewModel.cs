@@ -31,7 +31,9 @@ namespace afl_dakboard.ViewModels
         public CricketViewModel(CricketGame? lastGame, CricketGame? nextGame, ILogger logger, int ourTeamId)
         {
             var timezone = TZConvert.GetTimeZoneInfo("AUS Eastern Standard Time");
-            var timeInMelbourne = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timezone);
+            var convertedTime = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timezone);
+            var timeInMelbourne = DateTime.SpecifyKind(convertedTime.DateTime, DateTimeKind.Local);
+            
             if (lastGame != null)
             {
                 var (homeTeam, oppositionTeam) = GetTeams(lastGame, ourTeamId);
@@ -49,7 +51,7 @@ namespace afl_dakboard.ViewModels
                     : (0, 0, 0);
 
                 var dateTime = TimeZoneInfo.ConvertTime(lastGame.StartingAt, timezone);
-                LastGameDate = dateTime.Humanize(dateToCompareAgainst: timeInMelbourne.DateTime);
+                LastGameDate = dateTime.Humanize(dateToCompareAgainst: timeInMelbourne);
                 Note = lastGame.Note;
                 IsInProgress = lastGame.IsInProgress();
                 LastGameRound = lastGame.Round;
@@ -63,13 +65,12 @@ namespace afl_dakboard.ViewModels
             {
                 logger.LogInformation("timezone is {@TimeZone}", timezone);
                 logger.LogInformation("timeInMelbourne is {@TimeInMelbourne}", timeInMelbourne);
-                logger.LogInformation("timeInMelbourne.DateTime is {TimeInMelbourneDateTime}", timeInMelbourne.DateTime);
                 logger.LogInformation("nextGame.StartingAt is {NextGameStartingAt}", nextGame.StartingAt);
                 
-                var dateTime = TimeZoneInfo.ConvertTime(nextGame.StartingAt, timezone);
+                var dateTime = DateTime.SpecifyKind(TimeZoneInfo.ConvertTime(nextGame.StartingAt, timezone), DateTimeKind.Local);
                 logger.LogInformation("dateTime is {DateTime}", dateTime);
 
-                var when = nextGame.StartingAt.Humanize(dateToCompareAgainst: timeInMelbourne.DateTime, utcDate: true);
+                var when = dateTime.Humanize(dateToCompareAgainst: timeInMelbourne);
                 logger.LogInformation("when is {When}", when);
 
                 NextGameDate = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({when})";
