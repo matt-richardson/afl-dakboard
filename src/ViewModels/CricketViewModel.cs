@@ -63,16 +63,8 @@ namespace afl_dakboard.ViewModels
 
             if (nextGame != null)
             {
-                logger.LogInformation("timezone is {@TimeZone}", timezone);
-                logger.LogInformation("timeInMelbourne is {@TimeInMelbourne}", timeInMelbourne);
-                logger.LogInformation("nextGame.StartingAt is {NextGameStartingAt}", nextGame.StartingAt);
-                
                 var dateTime = DateTime.SpecifyKind(TimeZoneInfo.ConvertTime(nextGame.StartingAt, timezone), DateTimeKind.Local);
-                logger.LogInformation("dateTime is {DateTime}", dateTime);
-
                 var when = dateTime.Humanize(dateToCompareAgainst: timeInMelbourne);
-                logger.LogInformation("when is {When}", when);
-
                 NextGameDate = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({when})";
                 NextGameVenue = nextGame.Venue?.Name;
                 NextGameRound = nextGame.Round.ToLower();
