@@ -48,7 +48,8 @@ namespace afl_dakboard.ViewModels
                     ? (oppositionRuns.Score, oppositionRuns.Wickets, oppositionRuns.Overs)
                     : (0, 0, 0);
 
-                LastGameDate = TimeZoneInfo.ConvertTime(lastGame.StartingAt, timezone).Humanize(dateToCompareAgainst: timeInMelbourne.DateTime);
+                var dateTime = TimeZoneInfo.ConvertTime(lastGame.StartingAt, timezone);
+                LastGameDate = dateTime.Humanize(dateToCompareAgainst: timeInMelbourne.DateTime);
                 Note = lastGame.Note;
                 IsInProgress = lastGame.IsInProgress();
                 LastGameRound = lastGame.Round;
@@ -60,8 +61,18 @@ namespace afl_dakboard.ViewModels
 
             if (nextGame != null)
             {
+                logger.LogInformation("timezone is {TimeZone}", timezone);
+                logger.LogInformation("timeInMelbourne is {TimeInMelbourne}", timeInMelbourne);
+                logger.LogInformation("timeInMelbourne.DateTime is {TimeInMelbourneDateTime}", timeInMelbourne.DateTime);
+                logger.LogInformation("nextGame.StartingAt is {NextGameStartingAt}", nextGame.StartingAt);
+                
                 var dateTime = TimeZoneInfo.ConvertTime(nextGame.StartingAt, timezone);
-                NextGameDate = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({nextGame.StartingAt.Humanize(dateToCompareAgainst: timeInMelbourne.DateTime, utcDate: true)})";
+                logger.LogInformation("dateTime is {DateTime}", dateTime);
+
+                var when = nextGame.StartingAt.Humanize(dateToCompareAgainst: timeInMelbourne.DateTime, utcDate: true);
+                logger.LogInformation("when is {When}", when);
+
+                NextGameDate = $"{dateTime:ddd MMM dd} at {dateTime:h:mm tt} ({when})";
                 NextGameVenue = nextGame.Venue?.Name;
                 NextGameRound = nextGame.Round.ToLower();
                 NextGameTeam = nextGame.LocalTeamId == ourTeamId ? nextGame.VisitorTeam.Name : nextGame.LocalTeam.Name;
