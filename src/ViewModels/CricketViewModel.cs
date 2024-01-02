@@ -61,8 +61,8 @@ namespace afl_dakboard.ViewModels
 
             if (nextGame != null)
             {
-                logger.LogInformation("timezone is {TimeZone}", timezone);
-                logger.LogInformation("timeInMelbourne is {TimeInMelbourne}", timeInMelbourne);
+                logger.LogInformation("timezone is {@TimeZone}", timezone);
+                logger.LogInformation("timeInMelbourne is {@TimeInMelbourne}", timeInMelbourne);
                 logger.LogInformation("timeInMelbourne.DateTime is {TimeInMelbourneDateTime}", timeInMelbourne.DateTime);
                 logger.LogInformation("nextGame.StartingAt is {NextGameStartingAt}", nextGame.StartingAt);
                 
