@@ -33,8 +33,8 @@ namespace afl_dakboard.Controllers
         {
             var (lastGame, nextGame) = await _repository.GetLastAndNextGamesForMelbourneStars();
 
-            _logger.LogInformation("Last game is {Game}", JsonConvert.SerializeObject(lastGame));
-            _logger.LogInformation("Next game is {Game}", JsonConvert.SerializeObject(nextGame));
+            _logger.LogInformation("Last game is {@Game}", lastGame);
+            _logger.LogInformation("Next game is {@Game}", nextGame);
 
             return View(new CricketViewModel(lastGame, nextGame, _logger, _repository.TeamId, "Melbourne Stars"));
         }

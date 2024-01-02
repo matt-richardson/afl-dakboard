@@ -67,7 +67,7 @@ namespace afl_dakboard.ViewModels
                 NextGameTeam = nextGame.LocalTeamId == ourTeamId ? nextGame.VisitorTeam.Name : nextGame.LocalTeam.Name;
             }
 
-            logger.LogInformation("Rendering {Name} with {Json}", nameof(CricketViewModel), JsonConvert.SerializeObject(this));
+            logger.LogInformation("Rendering {Name} with {@Model}", nameof(CricketViewModel), this);
         }
 
         private static (Team LocalTeam, Team VisitorTeam) GetTeams(CricketGame lastGame, int ourTeamId)

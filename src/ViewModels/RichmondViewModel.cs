@@ -56,7 +56,7 @@ namespace afl_dakboard.ViewModels
                 NextGameTeam = nextGame.HomeTeam == "Richmond" ? nextGame.AwayTeam : nextGame.HomeTeam;
             }
 
-            logger.LogInformation("Rendering {Name} with {Json}", nameof(RichmondViewModel), JsonConvert.SerializeObject(this));
+            logger.LogInformation("Rendering {Name} with {@Model}", nameof(RichmondViewModel), this);
         }
     }
 }
