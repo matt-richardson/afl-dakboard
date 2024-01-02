@@ -28,7 +28,7 @@ namespace afl_dakboard.ViewModels
         public string? NextGameRound { get; }
         public string? NextGameTeam { get; }
 
-        public CricketViewModel(CricketGame? lastGame, CricketGame? nextGame, ILogger logger, int ourTeamId, string ourTeamName)
+        public CricketViewModel(CricketGame? lastGame, CricketGame? nextGame, ILogger logger, int ourTeamId)
         {
             var timezone = TZConvert.GetTimeZoneInfo("AUS Eastern Standard Time");
             var timeInMelbourne = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timezone);

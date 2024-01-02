@@ -36,7 +36,7 @@ namespace afl_dakboard.Controllers
             _logger.LogInformation("Last game is {@Game}", lastGame);
             _logger.LogInformation("Next game is {@Game}", nextGame);
 
-            return View(new CricketViewModel(lastGame, nextGame, _logger, _repository.TeamId, "Melbourne Stars"));
+            return View(new CricketViewModel(lastGame, nextGame, _logger, _repository.TeamId));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
