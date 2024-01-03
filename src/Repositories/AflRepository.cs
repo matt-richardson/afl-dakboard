@@ -34,7 +34,13 @@ namespace afl_dakboard.Repositories
             _logger.LogInformation("Getting teams from {Url}", url);
             var httpClient = new HttpClient();
             var json = await httpClient.GetStringAsync(url);
-            teams = JsonConvert.DeserializeObject<AflTeamsRoot>(json).Teams;
+            var response = JsonConvert.DeserializeObject<AflTeamsRoot>(json);
+            if (response == null)
+            {
+                _logger.LogWarning("Unable to deserialize response {Json}", json);
+                return new List<AflTeam>();
+            }
+            teams = response.Teams;
             _logger.LogInformation("Found {Count} teams", teams.Count);
             var expiration = DateTime.Now.AddDays(1);
             _logger.LogInformation("Caching data until {Expiration}", expiration);
@@ -51,7 +57,13 @@ namespace afl_dakboard.Repositories
             var url = "https://api.squiggle.com.au/?q=standings";
             _logger.LogInformation("Getting standings from {Url}", url);
             var json = await httpClient.GetStringAsync(url);
-            standings = JsonConvert.DeserializeObject<AflStandingsRoot>(json).Standings;
+            var response = JsonConvert.DeserializeObject<AflStandingsRoot>(json);
+            if (response == null)
+            {
+                _logger.LogWarning("Unable to deserialize response {Json}", json);
+                return new List<AflStanding>();
+            }
+            standings = response.Standings;
             _logger.LogInformation("Found {Count} games", standings.Count);
             var expiration = DateTime.Now.AddHours(1);
             _logger.LogInformation("Caching data until {Expiration}", expiration);
@@ -70,6 +82,11 @@ namespace afl_dakboard.Repositories
             _logger.LogInformation("Getting games for Richmond for this year from {Url}", url);
             var json = await httpClient.GetStringAsync(url);
             var response = JsonConvert.DeserializeObject<AflGamesRoot>(json);
+            if (response == null)
+            {
+                _logger.LogWarning("Unable to deserialize response {Json}", json);
+                return (null, null);
+            }
             var games = response.Games.Where(x => x.AwayTeam == "Richmond" || x.HomeTeam == "Richmond").ToList();
             _logger.LogInformation("Found {Count} games", games.Count);
             lastGame = games.OrderByDescending(x => x.Round).FirstOrDefault(x => x.Complete > 0);

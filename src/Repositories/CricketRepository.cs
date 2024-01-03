@@ -43,7 +43,13 @@ namespace afl_dakboard.Repositories
             _logger.LogInformation("Getting teams from {Url}", url.Replace(_apiToken, "xxxxxxxxxx"));
             var httpClient = new HttpClient();
             var json = await httpClient.GetStringAsync(url);
-            teams = JsonConvert.DeserializeObject<CricketTeamsRoot>(json).Teams;
+            var response = JsonConvert.DeserializeObject<CricketTeamsRoot>(json);
+            if (response == null)
+            {
+                _logger.LogWarning("Unable to deserialize response {Json}", json);
+                return new List<CricketTeam>();
+            }
+            teams = response.Teams;
             _logger.LogInformation("Found {Count} teams", teams.Count);
             _memoryCache.Set(TeamsCacheKey, teams, DateTime.Now.AddDays(1));
             return teams;
@@ -63,7 +69,13 @@ namespace afl_dakboard.Repositories
             _logger.LogInformation("Getting seasons from {Url}", url.Replace(_apiToken, "xxxxxxxxxx"));
             var httpClient = new HttpClient();
             var json = await httpClient.GetStringAsync(url);
-            seasons = JsonConvert.DeserializeObject<CricketSeasonRoot>(json).Seasons;
+            var response = JsonConvert.DeserializeObject<CricketSeasonRoot>(json);
+            if (response == null)
+            {
+                _logger.LogWarning("Unable to deserialize response {Json}", json);
+                return new List<CricketSeason>();
+            }
+            seasons = response.Seasons;
             _logger.LogInformation("Found {Count} seasons", seasons.Count);
             _memoryCache.Set(seasonsCacheKey, seasons, DateTime.Now.AddDays(1));
             return seasons;
@@ -83,7 +95,13 @@ namespace afl_dakboard.Repositories
             var url = $"https://cricket.sportmonks.com/api/v2.0/standings/season/{seasonId}?api_token={_apiToken}";
             _logger.LogInformation("Getting standings from {Url}", url.Replace(_apiToken, "xxxxxxxxxx"));
             var json = await httpClient.GetStringAsync(url);
-            standings = JsonConvert.DeserializeObject<CricketStandingsRoot>(json).Standings;
+            var response = JsonConvert.DeserializeObject<CricketStandingsRoot>(json);
+            if (response == null)
+            {
+                _logger.LogWarning("Unable to deserialize response {Json}", json);
+                return new List<CricketStanding>();
+            }
+            standings = response.Standings;
             _logger.LogInformation("Found {Count} standings", standings.Count);
             _memoryCache.Set(cacheKey, standings, DateTime.Now.AddHours(1));
             return standings;
@@ -115,6 +133,11 @@ namespace afl_dakboard.Repositories
                 _logger.LogInformation("Getting games from {Url}", gamesUrl.Replace(_apiToken, "xxxxxxxxxx"));
                 var gamesJson = await httpClient.GetStringAsync(gamesUrl);
                 var gamesResponse = JsonConvert.DeserializeObject<CricketGamesRoot>(gamesJson);
+                if (gamesResponse == null)
+                {
+                    _logger.LogWarning("Unable to deserialize response {Json}", gamesJson);
+                    break;
+                }
                 games.AddRange(gamesResponse.Games);
                 gamesUrl = gamesResponse.Links.Next + $"&{filter}";
                 totalGames = gamesResponse.Meta.Total;
