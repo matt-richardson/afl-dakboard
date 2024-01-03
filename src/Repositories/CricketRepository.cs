@@ -120,7 +120,9 @@ namespace afl_dakboard.Repositories
                 totalGames = gamesResponse.Meta.Total;
             } while (totalGames > games.Count);
 
-            _logger.LogInformation("Found {Count} games", games.Count);
+            _logger.LogInformation("Found {Count} games, {CountWithVenues} of which have venues", 
+                games.Count,
+                games.Count(x => x.Venue != null));
             var orderedGames = games.OrderBy(x => x.StartingAt).ToArray();
             lastGame = orderedGames.Where(x => x.IsTeam(teamId)).LastOrDefault(x => x.TossWonTeamId != null);
             nextGame = orderedGames.Where(x => x.IsTeam(teamId)).FirstOrDefault(x => x.TossWonTeamId == null);

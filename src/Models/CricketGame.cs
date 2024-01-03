@@ -358,7 +358,7 @@ namespace afl_dakboard.Models
         public IReadOnlyList<Run> Runs { get; }
 
         [JsonProperty("venue")]
-        public Venue Venue { get; }
+        public Venue? Venue { get; }
     }
 
     public static class CricketGameExtensions
