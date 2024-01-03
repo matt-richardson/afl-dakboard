@@ -34,10 +34,10 @@ namespace afl_dakboard.Repositories
         {
             if (_memoryCache.TryGetValue<IReadOnlyList<CricketTeam>>(TeamsCacheKey, out var teams))
             {
-                _logger.LogInformation("Cache hit - returning teams from cache");
+                _logger.LogInformation("Cache hit - returning {Collection} from cache", "teams");
                 return teams;
             }
-            _logger.LogInformation("Cache miss - querying teams from upstream");
+            _logger.LogInformation("Cache miss - querying {Collection} from upstream", "teams");
 
             var url = $"https://cricket.sportmonks.com/api/v2.0/teams?api_token={_apiToken}";
             _logger.LogInformation("Getting teams from {Url}", url.Replace(_apiToken, "xxxxxxxxxx"));
@@ -54,10 +54,10 @@ namespace afl_dakboard.Repositories
             var seasonsCacheKey = SeasonsCacheKey + "_" + leagueId;
             if (_memoryCache.TryGetValue<IReadOnlyList<CricketSeason>>(seasonsCacheKey, out var seasons))
             {
-                _logger.LogInformation("Cache hit - returning seasons from cache");
+                _logger.LogInformation("Cache hit - returning {Collection} from cache", "seasons");
                 return seasons!;
             }
-            _logger.LogInformation("Cache miss - querying seasons from upstream");
+            _logger.LogInformation("Cache miss - querying {Collection} from upstream", "seasons");
 
             var url = $"https://cricket.sportmonks.com/api/v2.0/seasons?api_token={_apiToken}&filter[league_id]={leagueId}";
             _logger.LogInformation("Getting seasons from {Url}", url.Replace(_apiToken, "xxxxxxxxxx"));
@@ -74,10 +74,10 @@ namespace afl_dakboard.Repositories
             var cacheKey = $"{StandingsCacheKey}_{seasonId}";
             if (_memoryCache.TryGetValue<IReadOnlyList<CricketStanding>>(cacheKey, out var standings))
             {
-                _logger.LogInformation("Cache hit - returning standings from cache");
+                _logger.LogInformation("Cache hit - returning {Collection} from cache", "standings");
                 return standings;
             }
-            _logger.LogInformation("Cache miss - querying standings from upstream");
+            _logger.LogInformation("Cache miss - querying {Collection} from upstream", "standings");
 
             var httpClient = new HttpClient();
             var url = $"https://cricket.sportmonks.com/api/v2.0/standings/season/{seasonId}?api_token={_apiToken}";
@@ -96,12 +96,12 @@ namespace afl_dakboard.Repositories
             if (_memoryCache.TryGetValue<CricketGame>(lastGameCacheKey, out var lastGame) &&
                 _memoryCache.TryGetValue<CricketGame>(nextGameCacheKey, out var nextGame))
             {
-                _logger.LogInformation("Cache hit - returning last and next game from cache");
+                _logger.LogInformation("Cache hit - returning {Collection} from cache", "last and next game");
                 return (lastGame, nextGame);
             }
 
             //todo: deal with pagination (maybe?)
-            _logger.LogInformation("Cache miss - querying games from upstream");
+            _logger.LogInformation("Cache miss - querying {Collection} from upstream", "games");
 
             var httpClient = new HttpClient();
 
@@ -132,7 +132,7 @@ namespace afl_dakboard.Repositories
             }
             
             var expiration = GetGameCacheExpiration(lastGame, nextGame);
-            _logger.LogInformation("Caching data until {Expiration}", expiration);
+            _logger.LogInformation("Caching game data until {Expiration}", expiration);
             _memoryCache.Set(lastGameCacheKey, lastGame, expiration);
             _memoryCache.Set(nextGameCacheKey, nextGame, expiration);
 
