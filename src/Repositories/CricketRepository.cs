@@ -27,12 +27,12 @@ namespace afl_dakboard.Repositories
         {
             _logger = logger;
             _memoryCache = memoryCache;
-            _apiToken = configuration["SportMonks:ApiToken"];
+            _apiToken = configuration["SportMonks:ApiToken"] ?? throw new ApplicationException("SportMonks:ApiToken is required");
         }
 
         public async Task<IReadOnlyList<CricketTeam>> GetTeams()
         {
-            if (_memoryCache.TryGetValue<IReadOnlyList<CricketTeam>>(TeamsCacheKey, out var teams))
+            if (_memoryCache.TryGetValue<IReadOnlyList<CricketTeam>>(TeamsCacheKey, out var teams) && teams != null)
             {
                 _logger.LogInformation("Cache hit - returning {Collection} from cache", "teams");
                 return teams;
@@ -72,7 +72,7 @@ namespace afl_dakboard.Repositories
         public async Task<IReadOnlyList<CricketStanding>> GetStandings(int? seasonId)
         {
             var cacheKey = $"{StandingsCacheKey}_{seasonId}";
-            if (_memoryCache.TryGetValue<IReadOnlyList<CricketStanding>>(cacheKey, out var standings))
+            if (_memoryCache.TryGetValue<IReadOnlyList<CricketStanding>>(cacheKey, out var standings) && standings != null)
             {
                 _logger.LogInformation("Cache hit - returning {Collection} from cache", "standings");
                 return standings;

@@ -27,7 +27,7 @@ namespace afl_dakboard.Repositories
 
         public async Task<List<AflTeam>> GetTeams()
         {
-            if (_memoryCache.TryGetValue<List<AflTeam>>(TeamsCacheKey, out var teams))
+            if (_memoryCache.TryGetValue<List<AflTeam>>(TeamsCacheKey, out var teams) && teams != null)
                 return teams;
 
             var url = "https://api.squiggle.com.au/?q=teams";
@@ -44,7 +44,7 @@ namespace afl_dakboard.Repositories
 
         public async Task<List<AflStanding>> GetStandings()
         {
-            if (_memoryCache.TryGetValue<List<AflStanding>>(StandingsCacheKey, out var standings))
+            if (_memoryCache.TryGetValue<List<AflStanding>>(StandingsCacheKey, out var standings) && standings != null)
                 return standings;
 
             var httpClient = new HttpClient();
