@@ -4,7 +4,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <RootNamespace>afl_dakboard</RootNamespace>
         <Nullable>enable</Nullable>
-        <WarningsAsErrors>true</WarningsAsErrors>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
