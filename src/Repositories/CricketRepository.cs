@@ -153,7 +153,7 @@ namespace afl_dakboard.Repositories
             if (nextGame == null && lastGame.IsComplete())
             {
                 lastGame = orderedGames.LastOrDefault(x => x.TossWonTeamId != null);
-                nextGame = orderedGames.FirstOrDefault(x => x.TossWonTeamId == null);
+                nextGame = orderedGames.FirstOrDefault(x => x.TossWonTeamId == null && !x.IsComplete());
             }
             
             var expiration = GetGameCacheExpiration(lastGame, nextGame);
