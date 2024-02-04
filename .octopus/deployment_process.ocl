@@ -26,7 +26,7 @@ step "start-new-container" {
             Octopus.Action.Docker.Args = "--name afl-dakboard"
             Octopus.Action.Docker.EnvVariable = "{\"VIRTUAL_HOST\":\"#{DomainName}\",\"LETSENCRYPT_HOST\":\"#{DomainName}\",\"Serilog__WriteTo__0__Args__serverUrl\":\"#{Seq.ServerUrl}\",\"Serilog__WriteTo__0__Args__ApiKey\":\"#{Seq.Afl.Dakboard.ApiKey}\",\"LOGSPOUT\":\"ignore\",\"SportMonks__ApiToken\":\"#{SportMonks.ApiToken}\"}"
             Octopus.Action.Docker.PortAutoMap = "False"
-            Octopus.Action.Docker.PortMapping = "{}"
+            Octopus.Action.Docker.PortMapping = "{\"80\":\"15080\"}"
             Octopus.Action.Docker.RestartPolicy = "always"
             Octopus.Action.Package.DownloadOnTentacle = "False"
             Octopus.Action.Package.FeedId = "docker-hub"
