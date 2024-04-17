@@ -18,6 +18,7 @@ namespace afl_dakboard.Repositories
         private const string NextGameCacheKey = "nextgame";
         private readonly ILogger<AflRepository> _logger;
         private readonly IMemoryCache _memoryCache;
+        private const string userAgent = "afl-dakboard/1.0 github.com / matt-richardson";
 
         public AflRepository(ILogger<AflRepository> logger, IMemoryCache memoryCache)
         {
@@ -32,8 +33,7 @@ namespace afl_dakboard.Repositories
 
             var url = "https://api.squiggle.com.au/?q=teams";
             _logger.LogInformation("Getting teams from {Url}", url);
-            var httpClient = new HttpClient();
-            var json = await httpClient.GetStringAsync(url);
+            var json = await GetString(url);
             var response = JsonConvert.DeserializeObject<AflTeamsRoot>(json);
             if (response == null)
             {
@@ -48,15 +48,23 @@ namespace afl_dakboard.Repositories
             return teams;
         }
 
+        private static async Task<string> GetString(string url)
+        {
+            var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("User-Agent", userAgent);
+            var json = await httpClient.GetStringAsync(url);
+            if (json.Contains("\"warning\""))
+                throw new Exception(json);
+            return json;
+        }
+
         public async Task<List<AflStanding>> GetStandings()
         {
             if (_memoryCache.TryGetValue<List<AflStanding>>(StandingsCacheKey, out var standings) && standings != null)
                 return standings;
 
-            var httpClient = new HttpClient();
             var url = "https://api.squiggle.com.au/?q=standings";
-            _logger.LogInformation("Getting standings from {Url}", url);
-            var json = await httpClient.GetStringAsync(url);
+            var json = await GetString(url);
             var response = JsonConvert.DeserializeObject<AflStandingsRoot>(json);
             if (response == null)
             {
@@ -77,10 +85,8 @@ namespace afl_dakboard.Repositories
                 _memoryCache.TryGetValue<AflGame>(NextGameCacheKey, out var nextGame))
                 return (lastGame, nextGame);
 
-            var httpClient = new HttpClient();
             var url = "https://api.squiggle.com.au/?q=games;year=" + DateTime.Now.Year;
-            _logger.LogInformation("Getting games for Richmond for this year from {Url}", url);
-            var json = await httpClient.GetStringAsync(url);
+            var json = await GetString(url);
             var response = JsonConvert.DeserializeObject<AflGamesRoot>(json);
             if (response == null)
             {
