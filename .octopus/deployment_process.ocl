@@ -9,6 +9,7 @@ step "stop-existing-container" {
         properties = {
             Octopus.Action.Docker.Remove = "True"
             Octopus.Action.Docker.RemoveSteps = "start-new-container"
+            Octopus.Action.RunOnServer = "false"
         }
         worker_pool_variable = ""
     }
@@ -31,6 +32,7 @@ step "start-new-container" {
             Octopus.Action.Package.DownloadOnTentacle = "False"
             Octopus.Action.Package.FeedId = "docker-hub"
             Octopus.Action.Package.PackageId = "mattrichardson/afl-dakboard"
+            Octopus.Action.RunOnServer = "false"
         }
         worker_pool_variable = ""
 
