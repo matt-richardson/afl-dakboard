@@ -1,3 +1,7 @@
 variable "DomainName" {
     value "afl.sybix9.com" {}
 }
+
+variable "Octopus.Task.ConcurrencyTag" {
+    value "recordanti" {}
+}
